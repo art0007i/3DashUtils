@@ -10,18 +10,26 @@ using UnityEngine.SceneManagement;
 namespace _3DashUtils.Mods.Editor;
 public class LevelImportExport : ModuleBase
 {
-    private float lastErrorTime = -3;
+    private const float ERROR_DURATION = 2;
+
+    private float lastErrorTime = ERROR_DURATION - 1;
+
+    public override float Priority => 1;
+
     public override string CategoryName => "Editor";
+    public override string ModuleName => "Level Import/Export";
 
     public override void OnGUI()
     {
+
         var text = "Import Level";
-        if(Time.realtimeSinceStartup - lastErrorTime < 2)
+        if(Time.realtimeSinceStartup - lastErrorTime < ERROR_DURATION)
         {
             text = "<color=red>Error in import!</color>";
         }
 
-        if(GUILayout.Button(text))
+        var importTip = this.GenerateTooltip("Override the current save with a level JSON from your clipboard.");
+        if (GUILayout.Button(new GUIContent(text,importTip)))
         {
             var scn = SceneManager.GetActiveScene();
             var editor = scn.GetRootGameObjects().Where((obj) => obj.GetComponent<LevelEditor>()).First().GetComponent<LevelEditor>();
@@ -36,8 +44,9 @@ public class LevelImportExport : ModuleBase
                 lastErrorTime = Time.realtimeSinceStartup;
             }
         }
-        
-        if(GUILayout.Button("Export Level"))
+
+        var exportTip = this.GenerateTooltip("Copy the current level JSON into your clipboard. Also works in user levels!");
+        if (GUILayout.Button(new GUIContent("Export Level", exportTip)))
         {
             var scn = SceneManager.GetActiveScene();
             var editor = scn.GetRootGameObjects().Where((obj) => obj.GetComponent<LevelEditor>()).First().GetComponent<LevelEditor>();
