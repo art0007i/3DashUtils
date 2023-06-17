@@ -19,8 +19,13 @@ namespace _3DashUtils.ModuleSystem
 
         public override void OnGUI()
         {
-            var text = $"{ModuleName}: " + ModuleUtils.GetEnabledText(Enabled.Value);
-            if (GUILayout.Button(new GUIContent(text, $"<b>{ModuleName}</b>: {Tooltip}")))
+            var text = $"{ModuleName}: " + Extensions.GetEnabledText(Enabled.Value);
+            string tip = null;
+            if (Tooltip != null)
+            {
+                tip = this.GenerateTooltip(Tooltip);
+            }
+            if (GUILayout.Button(new GUIContent(text, tip)))
             {
                 Enabled.Value = !Enabled.Value;
                 OnToggle();

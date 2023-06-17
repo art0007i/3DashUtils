@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "RunGame": {
+      "commandName": "Executable",
+      "executablePath": "$(GamePath)3Dash.exe",
+      "workingDirectory": "$(GamePath)"
+    }
+  }
+}

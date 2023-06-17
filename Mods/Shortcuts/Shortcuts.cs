@@ -15,12 +15,29 @@ internal class Shortcuts : ModuleBase
             "Main Menu", "Menu"
         },
         {
-            "Online Levels", "Online Levels Hub"
+            "Level Editor", "Save Select"
         },
         {
-            "Level Editor", "Save Select"
-        }
+            "Online Levels", "Online Levels Hub"
+        },
     };
+
+    private bool waitingForSceneChange;
+
+    public override void Awake()
+    {
+        SceneManager.activeSceneChanged += (oldScene, newScene) =>
+        {
+            if (!waitingForSceneChange) return;
+            waitingForSceneChange = false;
+            if (newScene.name == "Menu")
+            {
+                var menuManager = Object.FindObjectOfType<MenuButtonScript>();
+                menuManager.panner.anchoredPosition = Utils.ChangeX(menuManager.pannerTransformGoal, 0f - menuManager.movementDistance);
+                menuManager.pannerTransformGoal = Utils.ChangeX(menuManager.pannerTransformGoal, 0f - menuManager.movementDistance);
+            }
+        };
+    }
 
     public override void OnGUI()
     {
@@ -34,10 +51,13 @@ internal class Shortcuts : ModuleBase
 
         if(GUILayout.Button("Offline Levels"))
         {
+            waitingForSceneChange = true;
             SceneManager.LoadScene("Menu");
-            var menuManager = Object.FindObjectOfType<MenuButtonScript>();
-            menuManager.panner.anchoredPosition = Utils.ChangeX(menuManager.pannerTransformGoal, 0f - menuManager.movementDistance);
-            menuManager.pannerTransformGoal = Utils.ChangeX(menuManager.pannerTransformGoal, 0f - menuManager.movementDistance);
+        }
+
+        if(GUILayout.Button("<color=orange>Quit Game</color>"))
+        {
+            Application.Quit();
         }
     }
 }
