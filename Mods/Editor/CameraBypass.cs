@@ -15,11 +15,6 @@ public class CameraBypass : ToggleModule
     public override ConfigEntry<bool> Enabled => option;
 
     public override string Tooltip => "Allows you to move the editor camera outside of the normal area.";
-
-    public override void OnGUI()
-    {
-        base.OnGUI();
-    }
 }
 
 [HarmonyPatch(typeof(FlatCamera), "Update")]
