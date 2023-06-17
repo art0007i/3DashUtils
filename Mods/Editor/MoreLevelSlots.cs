@@ -43,18 +43,11 @@ public class MoreLevelSlots : ToggleModule
         saveSelect.UpdateButtons();
     }
 
-    private Button.ButtonClickedEvent onAddNewFile = new();
-
     public override void Awake()
     {
-        onAddNewFile.AddListener(() =>
-        {
-            var saveSelect = GameObject.Find("SaveSelect").GetComponent<SaveSelect>();
-            DupeFile(saveSelect);
-        });
         SceneManager.activeSceneChanged += (oldScene, newScene) =>
         {
-            if (newScene.name != "Save Select") return;
+            if (!option.Value || newScene.name != "Save Select") return;
 
 
             var buttonsRoot = newScene.GetRootGameObjects().Select((g) => g.transform.Find("Buttons")).FirstOrDefault((g) => g != null);
@@ -67,21 +60,10 @@ public class MoreLevelSlots : ToggleModule
                     int.Parse(string.Concat(Path.GetFileName(file).Substring(4).TakeWhile(c => char.IsDigit(c))))
                 ).Max();
 
-                
-
                 // 10 default files, dont need to dupe them
                 // 1 extra so u can always have a free slot :)
                 DupeFile(saveSelect, (largetFile - 10) + 1);
-
-                var newButton = GameObject.Instantiate(buttonsRoot.parent.Find("Back Button"));
-                newButton.name = "Add New File";
-                var newTransform = newButton.GetComponent<RectTransform>();
-                newTransform.SetParent(buttonsRoot.parent, false);
-                newTransform.offsetMax = new Vector2(newTransform.offsetMax.x, newTransform.offsetMax.y - 200);
-                newTransform.offsetMin = new Vector2(newTransform.offsetMin.x, newTransform.offsetMin.y - 200);
-                var actionButton = newButton.GetComponent<Button>();
-                actionButton.onClick = onAddNewFile;
-
+                
                 var go = buttonsRoot.gameObject;
                 // this is the actual size of those buttons. wtf
                 // 684.4152, 126.1679
