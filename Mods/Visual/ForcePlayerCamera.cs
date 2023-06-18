@@ -20,10 +20,13 @@ public class ForcePlayerCamera : ToggleModule
         if (conf)
         {
             var cam = GameObject.Find("Boom Arm");
-            var player = GameObject.Find("ActualPlayer").transform.localRotation;
-            player.ToAngleAxis(out var angle, out var axis);
-            cam.transform.localRotation = Quaternion.AngleAxis(angle + 90, axis);
-            cam.GetComponent<Animator>().enabled = false;
+            if(cam != null)
+            {
+                var player = GameObject.Find("ActualPlayer").transform.localRotation;
+                player.ToAngleAxis(out var angle, out var axis);
+                cam.transform.localRotation = Quaternion.AngleAxis(angle + 90, axis);
+                cam.GetComponent<Animator>().enabled = false;
+            }
         }
         Object.FindObjectsOfType<CameraPlayback>().Do(cam =>
         {
