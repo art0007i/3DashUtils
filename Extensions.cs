@@ -40,4 +40,11 @@ public static class Extensions
         }
         return false;
     }
+    /// <summary>
+    /// Returns true whenever any cheating modules are enabled.
+    /// </summary>
+    public static bool CheatsEnabled()
+    {
+        return _3DashUtils.moduleList.Any((m) => m.IsCheat);
+    }
 }

@@ -20,6 +20,8 @@ public class SpeedHack : TextEditorModule<float>
 
     public override string Tooltip => "Changes the speed of the game.";
 
+    public override bool IsCheat => Enabled.Value && Value.Value < 1;
+
     public override void Start()
     {
         lastText = valueOption.Value.ToString();

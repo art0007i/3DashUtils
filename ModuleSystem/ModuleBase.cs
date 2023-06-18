@@ -14,11 +14,17 @@ public abstract class ModuleBase : IMenuModule
 
     public virtual float Priority => 0;
 
+    public virtual bool IsCheat => false;
+
     public virtual void Awake()
     {
     }
 
     public virtual void OnGUI()
+    {
+    }
+
+    public virtual void OnUnityGUI()
     {
     }
 
