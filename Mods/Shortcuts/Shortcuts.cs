@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace _3DashUtils.Mods.Shortcuts;
 
-internal class Shortcuts : ModuleBase
+public class Shortcuts : ModuleBase
 {
     public override string CategoryName => "Shortcuts";
 

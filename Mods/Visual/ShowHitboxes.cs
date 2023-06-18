@@ -11,8 +11,8 @@ namespace _3DashUtils.Mods.Visual;
 
 public class ShowHitboxes : ToggleModule
 {
-    public static ConfigEntry<bool> showHitboxes = _3DashUtils.ConfigFile.Bind("Visual", "ShowHitboxes", false);
-    public override ConfigEntry<bool> Enabled => showHitboxes;
+    public static ConfigEntry<bool> option = _3DashUtils.ConfigFile.Bind("Visual", "ShowHitboxes", false);
+    public override ConfigEntry<bool> Enabled => option;
 
     public override string CategoryName => "Visual";
 
@@ -30,12 +30,8 @@ public class ShowHitboxes : ToggleModule
         };
     }
 
-    public override void Update()
+    public static void RenderHitboxes()
     {
-        if (!Enabled.Value)
-        {
-            return;
-        }
         Gizmos.Material = _3DashUtils.CustomMaterial;
 
         GameObject.FindGameObjectsWithTag("Player").SelectMany(p => p.GetComponents<PlayerScript>())
@@ -65,6 +61,15 @@ public class ShowHitboxes : ToggleModule
 
         Object.FindObjectsOfType<PortalScript>().SelectMany(p => p.gameObject.GetComponents<Collider>())
             .Do(coll => RenderCollider(coll, new Color(1f, 0.5f, 0f)));
+    }
+
+    public override void Update()
+    {
+        if (!Enabled.Value)
+        {
+            return;
+        }
+        RenderHitboxes();
     }
 
     public static void RenderCollider(Collider c, Color col)
