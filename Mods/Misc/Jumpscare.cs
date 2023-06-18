@@ -25,14 +25,13 @@ public class Jumpscare : TextEditorModule<double>
 
     public override string Tooltip => "Jumpscares the player when said player dies, with provided chance by the user.";
 
-
     public static void Death()
     {
         //roll rng here and do jumpscare
         var rand = new System.Random();
         if(rand.NextDouble() < valueOption.Value)
         {
-
+            
         }
     }
 
