@@ -20,11 +20,19 @@ internal class CheatIndicator : ToggleModule
 
     public override string Tooltip => "Displays a red dot when playing a level if any cheat modules are turned on.";
 
+    const int spacing = 5;
+    const int fontSize = 24;
+
     public override void OnUnityGUI()
     {
         if(Enabled.Value && Extensions.CheatsEnabled())
         {
-            GUI.Label(new Rect(5, Screen.height - 25, 200, 20), "<color=red>CHEATING</color>");
+            var style = new GUIStyle(GUI.skin.label);
+            style.fontSize = fontSize;
+            style.normal.textColor = Color.red;
+            GUI.Label(new Rect(spacing, Screen.height - fontSize - spacing, 200, fontSize * 2), "●", style);
         }
+
+        //add thingy when suboption is not kil to make it green when not epic gaming hacking
     }
 }

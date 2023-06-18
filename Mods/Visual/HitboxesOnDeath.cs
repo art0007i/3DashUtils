@@ -18,7 +18,7 @@ internal class HitboxesOnDeath : ToggleModule
 
     public override void Update()
     {
-        if (ShowHitboxes.option.Value || !option.Value) return;
+        //if (ShowHitboxes.option.Value || !option.Value) return;
         var player = UnityEngine.Object.FindObjectOfType<PlayerScript>();
         if(player != null && player.dead)
         {
