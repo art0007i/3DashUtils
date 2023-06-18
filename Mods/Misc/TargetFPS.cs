@@ -24,10 +24,6 @@ public class TargetFPS : TextEditorModule<int>
     {
         return int.TryParse(lastText, out parse) && parse > 0;
     }
-    public override void Start()
-    {
-        lastText = valueOption.Value.ToString();
-    }
     public override void Update()
     {
         Application.targetFrameRate = Enabled.Value ? Value.Value : -1;

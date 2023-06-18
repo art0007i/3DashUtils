@@ -47,4 +47,9 @@ public static class Extensions
     {
         return _3DashUtils.moduleList.Any((m) => m.IsCheat);
     }
+
+    public static T GetModule<T>() where T : IMenuModule
+    {
+        return (T)_3DashUtils.moduleList.Find((v) => { return typeof(T).IsAssignableFrom(v.GetType()); });
+    }
 }
