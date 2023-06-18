@@ -13,6 +13,8 @@ public class InstantComplete : ToggleModule
 
     public override ConfigEntry<bool> Enabled => option;
 
+    public override bool IsCheat => Enabled.Value;
+
     public override string Tooltip => "Automatically wins any level you enter.";
 
     public override void Update()

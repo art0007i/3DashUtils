@@ -19,6 +19,8 @@ public class Noclip : ToggleModule
 
     public override string Tooltip => "Prevents the player from dying.";
 
+    public override bool IsCheat => Enabled.Value;
+
     public override void Update()
     {
         if (noclip.Value)

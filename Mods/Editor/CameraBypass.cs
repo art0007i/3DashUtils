@@ -17,24 +17,11 @@ public class CameraBypass : ToggleModule
     public override string Tooltip => "Allows you to move the editor camera outside of the normal area.";
 }
 
-[HarmonyPatch(typeof(FlatCamera), "Update")]
+[HarmonyPatch(typeof(FlatCamera), "ClampPosition")]
 public class CameraBypassPatch
 {
-    private static void Postfix(ref float ___rightBound, ref float ___leftBound, ref float ___topBound, ref float ___bottomBound)
+    private static bool Prefix()
     {
-        if (CameraBypass.option.Value)
-        {
-            ___rightBound = 2100f;
-            ___leftBound = -100f;
-            ___topBound = 100f;
-            ___bottomBound = -100f;
-        }
-        else
-        {
-            ___rightBound = 2000f;
-            ___leftBound = -1f;
-            ___topBound = 30f;
-            ___bottomBound = -11f;
-        }
+        return !CameraBypass.option.Value;
     }
 }

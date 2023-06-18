@@ -29,6 +29,14 @@ namespace _3DashUtils.ModuleSystem
         /// This function will be ran inside of a window along other modules with the same <see cref="CategoryName"/>.
         /// </summary>
         public abstract void OnGUI();
+
+        /// <summary>
+        /// Called whenever the OnGUI unity function gets called.
+        /// <br/>
+        /// This is for adding gui outside of the module's window.
+        /// </summary>
+        public abstract void OnUnityGUI();
+
         /// <summary>
         /// The name of the category of this module.
         /// Each unique category will create a separate window, except for '<b>Hidden</b>' which is ignored.
@@ -39,5 +47,10 @@ namespace _3DashUtils.ModuleSystem
         /// Higher numbers position the module higher in the list.
         /// </summary>
         public abstract float Priority { get; }
+        
+        /// <summary>
+        /// If the module is considered to be a cheat.
+        /// </summary>
+        public abstract bool IsCheat { get; }
     }
 }
