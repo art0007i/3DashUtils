@@ -12,13 +12,13 @@ internal class HitboxesOnDeath : ToggleModule
 
     public override string CategoryName => "Visual";
 
-    public override string ModuleName => "Show Hitboxes On Death";
+    public override string ModuleName => "Hitboxes On Death";
 
     public override string Tooltip => "Shows hitboxes of all interactable objects on player death.";
 
     public override void Update()
     {
-        if (!ShowHitboxes.option.Value || !option.Value) return;
+        if (ShowHitboxes.option.Value || !option.Value) return;
         var player = UnityEngine.Object.FindObjectOfType<PlayerScript>();
         if(player != null && player.dead)
         {
