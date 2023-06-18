@@ -12,7 +12,7 @@ using UnityEngine.SceneManagement;
 
 namespace _3DashUtils.Mods.Misc;
 
-internal class Jumpscare : ToggleModule
+public class Jumpscare : ToggleModule
 {
     public static ConfigEntry<bool> option = _3DashUtils.ConfigFile.Bind("Misc", "Jumpscare", false);
     public override string CategoryName => "Misc";
@@ -27,6 +27,7 @@ internal class Jumpscare : ToggleModule
 
     public override void OnGUI()
     {
+        base.OnGUI();
         //chance = ((int)UnityEngine.GUILayout.HorizontalSlider(5, 0, 100)); //chance slider
     }
 
