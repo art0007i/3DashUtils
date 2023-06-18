@@ -118,30 +118,4 @@ public class _3DashUtils : BaseUnityPlugin
 		Harmony.PatchAll(Assembly);
 
 	}
-
-    [HarmonyPatch(typeof(PauseMenuManager), "Update")]
-    public static class PauseMenuManager_Update_Patch
-    {
-        private static void Postfix(PauseMenuManager __instance)
-        {
-            _3DashUtils.showPath.Value = __instance.pathToggle.isOn;
-            _3DashUtils.volume.Value = __instance.volumeSlider.value;
-        }
-    }
-
-    [HarmonyPatch(typeof(PauseMenuManager), "Start")]
-    public static class PauseMenuManager_Start_Patch
-    {
-        private static bool flag;
-
-        private static void Postfix(PauseMenuManager __instance)
-        {
-            if (!flag)
-            {
-                __instance.pathToggle.isOn = _3DashUtils.showPath.Value;
-                __instance.volumeSlider.value = _3DashUtils.volume.Value;
-                flag = true;
-            }
-        }
-    }
 }
