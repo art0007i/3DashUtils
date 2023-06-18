@@ -12,15 +12,13 @@ namespace _3DashUtils.Mods.Visual;
 internal class CheatIndicator : ToggleModule
 {
     public static ConfigEntry<bool> option = _3DashUtils.ConfigFile.Bind("Visual", "CheatIndicator", false);
-    public override string CategoryName => "Misc";
+    public override string CategoryName => "Visual";
 
-    public override string ModuleName => "CheatIndicator";
+    public override string ModuleName => "Cheat Indicator";
 
     public override ConfigEntry<bool> Enabled => option;
 
     public override string Tooltip => "Displays a red dot when playing a level if any cheat modules are turned on.";
-
-    public int chance;
 
     public override void OnGUI()
     {
