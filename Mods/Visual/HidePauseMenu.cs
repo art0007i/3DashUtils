@@ -17,14 +17,6 @@ public class HidePauseMenu : ToggleModule
 
     public override string Tooltip => "Makes the pause menu invisible.";
 
-    public override void Update()
-    {
-        if (Enabled.Value && Extensions.GetPauseState())
-        {
-            SetPauseMenuVisibility(false);
-        }
-    }
-
     internal void SetPauseMenuVisibility(bool visible)
     {
         Object.FindObjectsOfType<PauseMenuManager>().Do(p => p.uiObject.SetActive(visible));
@@ -32,6 +24,15 @@ public class HidePauseMenu : ToggleModule
 
     public override void OnToggle()
     {
-        SetPauseMenuVisibility(Enabled.Value);
+        SetPauseMenuVisibility(!Enabled.Value && Extensions.GetPauseState());
+    }
+}
+
+[HarmonyPatch(typeof(PauseMenuManager), nameof(PauseMenuManager.Pause))]
+class HidePauseMenuPatch
+{
+    public static void Postfix(PauseMenuManager __instance)
+    {
+        __instance.uiObject.SetActive(!HidePauseMenu.option.Value);
     }
 }
