@@ -1,4 +1,5 @@
-﻿using System;
+﻿using _3DashUtils.ModuleSystem;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -15,6 +16,14 @@ public static class Extensions
     public static string GetEnabledText(bool enabled)
     {
         return enabled ? "<color=green>ON</color>" : "<color=red>OFF</color>";
+    }
+
+    /// <summary>
+    /// Generates a string that has the module name followed by the provided tooltip.
+    /// </summary>
+    public static string GenerateTooltip(this IMenuModule mod, string tip)
+    {
+        return $"<b>{mod.ModuleName}</b>: {tip}";
     }
 
     /// <summary>
