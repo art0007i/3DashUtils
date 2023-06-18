@@ -1,10 +1,13 @@
 ﻿using BepInEx.Configuration;
+using System.Reflection;
 using UnityEngine;
 
 namespace _3DashUtils.ModuleSystem
 {
     public abstract class ToggleModule : ModuleBase
     {
+        public virtual KeyCode KeyBind => KeyCode.None;
+
         public abstract ConfigEntry<bool> Enabled { get; }
 
         public virtual string Tooltip => null;
