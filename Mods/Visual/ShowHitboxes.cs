@@ -65,10 +65,7 @@ public class ShowHitboxes : ToggleModule
 
     public override void Update()
     {
-        if (!Enabled.Value)
-        {
-            return;
-        }
+        if (!Enabled.Value) return;
         RenderHitboxes();
     }
 

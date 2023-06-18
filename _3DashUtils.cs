@@ -109,10 +109,9 @@ public class _3DashUtils : BaseUnityPlugin
 			}
         }
         Load = new GameObject();
-		Load.name = "3DMM Manager";
+		Load.name = "3DashUtils Manager";
 		Load.AddComponent<_3DashUtilsScript>();
-		UnityEngine.Object.DontDestroyOnLoad(Load);
-		Log.LogMessage("Mod Started!");
+		DontDestroyOnLoad(Load);
 		Harmony.PatchAll(Assembly);
 
 	}
