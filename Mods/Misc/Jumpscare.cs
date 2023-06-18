@@ -12,28 +12,33 @@ using UnityEngine.SceneManagement;
 
 namespace _3DashUtils.Mods.Misc;
 
-public class Jumpscare : ToggleModule
+public class Jumpscare : TextEditorModule<double>
 {
     public static ConfigEntry<bool> option = _3DashUtils.ConfigFile.Bind("Misc", "Jumpscare", false);
+    public static ConfigEntry<double> valueOption = _3DashUtils.ConfigFile.Bind("Misc", "JumpscareChance", 0.05);
     public override string CategoryName => "Misc";
 
     public override string ModuleName => "Jumpscare";
 
     public override ConfigEntry<bool> Enabled => option;
+    public override ConfigEntry<double> Value => valueOption;
 
     public override string Tooltip => "Jumpscares the player when said player dies, with provided chance by the user.";
 
-    public int chance;
 
-    public override void OnGUI()
-    {
-        base.OnGUI();
-        //chance = ((int)UnityEngine.GUILayout.HorizontalSlider(5, 0, 100)); //chance slider
-    }
-
-    public void Death()
+    public static void Death()
     {
         //roll rng here and do jumpscare
+        var rand = new System.Random();
+        if(rand.NextDouble() < valueOption.Value)
+        {
+
+        }
+    }
+
+    public override bool TryParseText(string text, out double parse)
+    {
+        return double.TryParse(text, out parse) && parse > 0 && parse <= 1;
     }
 }
 
@@ -42,8 +47,6 @@ public static class NoDeathAnimationPatch
 {
     public static void Prefix()
     {
-        //var rand = new System.Random();
-        //rand.Next(((int)OnGUI.chance), 100); you'd need to access the chance var. I'll keep this in here for a moment, until i figure out what to do with it 
-        //Jumpscare.SendMessage("Death"); -- yeah no idea how to do this. I would need to get an instance of the jumpscare script but idk how -_/ ._. \_-
+        Jumpscare.Death();
     }
 }
