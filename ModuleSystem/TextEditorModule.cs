@@ -15,6 +15,11 @@ public abstract class TextEditorModule<T> : ToggleModule
     internal string lastText;
     public abstract bool TryParseText(string text, out T parse);
 
+    public override void Start()
+    {
+        lastText = Value.Value.ToString();
+    }
+
     public override void OnGUI()
     {
         GUILayout.BeginHorizontal();
