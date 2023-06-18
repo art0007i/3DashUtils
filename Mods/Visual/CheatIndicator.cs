@@ -20,12 +20,11 @@ internal class CheatIndicator : ToggleModule
 
     public override string Tooltip => "Displays a red dot when playing a level if any cheat modules are turned on.";
 
-    public override void OnGUI()
+    public override void OnUnityGUI()
     {
-        base.OnGUI();
         if(Enabled.Value && Extensions.CheatsEnabled())
         {
-            GUI.Label(new Rect(5, 5, 200, 20), "<color=red>CHEATING</red>");
+            GUI.Label(new Rect(5, Screen.height - 25, 200, 20), "<color=red>CHEATING</color>");
         }
     }
 }
