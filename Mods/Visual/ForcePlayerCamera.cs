@@ -14,6 +14,8 @@ public class ForcePlayerCamera : ToggleModule
     public override string ModuleName => "Force Player Camera";
     public override string Tooltip => "Locks the camera to be in front of the player no matter what.";
 
+    public override bool IsCheat => Enabled.Value;
+
     public override void Update()
     {
         var conf = Enabled.Value;
