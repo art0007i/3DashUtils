@@ -66,5 +66,6 @@ public class _3DashUtilsScript : MonoBehaviour
                 GUI.Box(rect, content, style);
             }
         }
-	}
+        _3DashUtils.moduleList.Do((p) => p.OnUnityGUI());
+    }
 }
