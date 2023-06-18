@@ -32,8 +32,6 @@ public class _3DashUtils : BaseUnityPlugin
 	public static ConfigFile ConfigFile = new ConfigFile(Path.Combine(Paths.ConfigPath, MODNAME + ".cfg"), saveOnInit: true);
 
 
-    public static ConfigEntry<float> volume = ConfigFile.Bind("GameSettings", "Volume", 1f);
-    public static ConfigEntry<bool> showPath = ConfigFile.Bind("GameSettings", "ShowPath", false);
 
     private static GameObject Load;
     internal static Material CustomMaterial;
