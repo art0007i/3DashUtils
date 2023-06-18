@@ -27,7 +27,7 @@ internal class Jumpscare : ToggleModule
 
     public override void OnGUI()
     {
-        chance = ((int)UnityEngine.GUILayout.HorizontalSlider(5, 0, 100)); //chance slider
+        //chance = ((int)UnityEngine.GUILayout.HorizontalSlider(5, 0, 100)); //chance slider
     }
 
     public void Death()
@@ -41,7 +41,7 @@ public static class NoDeathAnimationPatch
 {
     public static void Prefix()
     {
-        var rand = new System.Random();
+        //var rand = new System.Random();
         //rand.Next(((int)OnGUI.chance), 100); you'd need to access the chance var. I'll keep this in here for a moment, until i figure out what to do with it 
         //Jumpscare.SendMessage("Death"); -- yeah no idea how to do this. I would need to get an instance of the jumpscare script but idk how -_/ ._. \_-
     }
