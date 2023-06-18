@@ -21,11 +21,6 @@ public class SpeedHack : TextEditorModule<float>
     public override string Tooltip => "Changes the speed of the game.";
 
     public override bool IsCheat => Enabled.Value && Value.Value < 1;
-
-    public override void Start()
-    {
-        lastText = valueOption.Value.ToString();
-    }
     public override void Update()
     {
         if (!Extensions.GetPauseState())
@@ -33,27 +28,6 @@ public class SpeedHack : TextEditorModule<float>
             Time.timeScale = Enabled.Value ? Value.Value : 1f;
         }
     }
-    /*
-    public override void OnGUI()
-    {
-        GUILayout.BeginHorizontal();
-        {
-            lastText = GUILayout.TextField(lastText, GUILayout.Width(50));
-            if (float.TryParse(lastText, out var i))
-            {
-                if (i > 0)
-                {
-                    valueOption.Value = i;
-                }
-            }
-            if (GUILayout.Button("Speed Hack: " + ModuleUtils.GetEnabledText(toggleOption.Value), GUILayout.ExpandWidth(true)))
-            {
-                toggleOption.Value = !toggleOption.Value;
-            }
-        }
-        GUILayout.EndHorizontal();
-    }*/
-
 
     public override bool TryParseText(string text, out float parse)
     {
