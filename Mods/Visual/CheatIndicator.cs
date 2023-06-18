@@ -22,6 +22,7 @@ internal class CheatIndicator : ToggleModule
 
     public override void OnGUI()
     {
+        base.OnGUI();
         if(Enabled.Value)
         {
             GUI.Label(new Rect(5, 5, 200, 20), "CHEATING");
