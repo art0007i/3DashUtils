@@ -1,6 +1,8 @@
 ﻿using _3DashUtils.ModuleSystem;
 using BepInEx.Configuration;
 using HarmonyLib;
+using System.Linq;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace _3DashUtils.Mods.Visual;
@@ -18,9 +20,9 @@ internal class HitboxesOnDeath : ToggleModule
 
     public override void Update()
     {
-        //if (ShowHitboxes.option.Value || !option.Value) return;
-        var player = UnityEngine.Object.FindObjectOfType<PlayerScript>();
-        if(player != null && player.dead)
+        if (ShowHitboxes.option.Value || !option.Value) return;
+        var dead = SceneManager.GetActiveScene().GetRootGameObjects().Any(go => go.name.StartsWith("DeathPrefab"));
+        if(dead)
         {
             ShowHitboxes.RenderHitboxes();
         }

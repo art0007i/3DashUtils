@@ -1,14 +1,11 @@
-﻿using _3DashUtils.Mods.Player;
+﻿using _3DashUtils.Mods.Hidden;
 using _3DashUtils.ModuleSystem;
 using BepInEx.Configuration;
 using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 namespace _3DashUtils.Mods.Misc;
@@ -26,32 +23,39 @@ public class Jumpscare : TextEditorModule<double>
 
     public override string Tooltip => "Jumpscares the player when said player dies, with provided chance by the user.";
 
-    public static Sprite jumpscareSprite;
+    public static Sprite jumpscareSprite = null;
+    public static AudioClip jumpscareAudio = null;
 
     public override void Awake()
     {
         base.Awake();
-        var img = Properties.Resources.jumpscare;
-        var jumpscareTex = new Texture2D(img.Width, img.Height);
-        var converter = new System.Drawing.ImageConverter();
-        var bytes = (byte[])converter.ConvertTo(img, typeof(byte[]));
-        jumpscareTex.LoadRawTextureData(bytes);
+        // let it load async
+        _ = LoadJumpscareAssets();
 
-        jumpscareSprite = Sprite.Create(jumpscareTex, new Rect(0.0f, 0.0f, jumpscareTex.width, jumpscareTex.height), new Vector2(0.5f, 0.5f), 100.0f);
     }
 
-    public static void Death()
+    public async Task LoadJumpscareAssets()
     {
-        //roll rng here and do jumpscare
-        var rand = new System.Random();
-        if(rand.NextDouble() < valueOption.Value)
-        {
-            var gamer = new GameObject("Jumpscare");
-            gamer.transform.SetParent(GameObject.Find("PauseCanvas").transform, false);
-            gamer.AddComponent<JumpscareScript>();
-        }
-    }
+        var path = Path.Combine(Path.GetDirectoryName(this.GetType().Assembly.Location), "Resources");
+        _3DashUtils.Log.LogMessage(path);
 
+        var req = UnityWebRequestMultimedia.GetAudioClip("file:///" + Path.Combine(path, "jumpscare.mp3"), AudioType.MPEG);
+        var reqask = req.SendWebRequest();
+        reqask.completed += (op) =>
+        {
+            jumpscareAudio = DownloadHandlerAudioClip.GetContent(req);
+        };
+
+        var fs = File.OpenRead(Path.Combine(path, "jumpscare.png"));
+        var bytes = new byte[fs.Length];
+        await fs.ReadAsync(bytes, 0, (int)fs.Length);
+        var jumpscareTex = new Texture2D(4, 4);
+        ImageConversion.LoadImage(jumpscareTex, bytes);
+        jumpscareTex.Apply(true, true);
+        jumpscareSprite = Sprite.Create(jumpscareTex, new Rect(0.0f, 0.0f, jumpscareTex.width, jumpscareTex.height), new Vector2(0.5f, 0.5f), 100.0f);
+
+        
+    }
     public override bool TryParseText(string text, out double parse)
     {
         return double.TryParse(text, out parse) && parse > 0 && parse <= 1;
@@ -63,7 +67,12 @@ public static class NoDeathAnimationPatch
 {
     public static void Prefix()
     {
-        Jumpscare.Death();
+        if (UnityEngine.Random.value < Jumpscare.valueOption.Value)
+        {
+            var gamer = new GameObject("Jumpscare");
+            gamer.transform.SetParent(GameObject.Find("PauseCanvas").transform, false);
+            gamer.AddComponent<JumpscareScript>();
+        }
     }
 }
 
@@ -78,10 +87,35 @@ public class JumpscareScript : MonoBehaviour
 
     public void Start()
     {
-        rect = gameObject.GetComponent<RectTransform>();
         var image = gameObject.AddComponent<Image>();
+        rect = gameObject.GetComponent<RectTransform>();
         image.sprite = Jumpscare.jumpscareSprite;
         rect.anchorMin = new Vector2(0.5f, 0.5f);
         rect.anchorMax = new Vector2(0.5f, 0.5f);
+        if(Jumpscare.jumpscareAudio != null)
+        {
+            AudioSource.PlayClipAtPoint(Jumpscare.jumpscareAudio, Vector3.zero, 100f);
+        }
+    }
+}
+
+[HarmonyPatch(typeof(PauseMenuManager), "Update")]
+public static class NoDeathAnimationPatch2
+{
+    public static void Postfix(PauseMenuManager __instance)
+    {
+        // MAKE IT LOUD!!
+        if (Object.FindObjectOfType<JumpscareScript>() != null)
+        {
+            AudioListener.volume = 1f;
+        }
+    }
+}
+[HarmonyPatch(typeof(PauseMenuManager), "Start")]
+public static class NoDeathAnimationPatch3
+{
+    public static void Postfix(PauseMenuManager __instance)
+    {
+        __instance.volumeSlider.value = SettingsPersistence.volume.Value;
     }
 }
