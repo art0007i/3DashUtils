@@ -25,7 +25,8 @@ internal class CheatIndicator : ToggleModule
         base.OnGUI();
         if(Enabled.Value)
         {
-            GUI.Label(new Rect(5, 5, 200, 20), "CHEATING");
+
+            GUI.Label(new Rect(5, 5, 200, 20), "<color=red>CHEATING</red>");
         }
     }
 }
