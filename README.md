@@ -6,7 +6,8 @@ It adds a menu (toggled by pressing tab) which gives you access to a bunch of di
 
 ## Features
 
-![Screenshot 2023-06-17 140358](https://github.com/art0007i/3DashUtils/assets/19620451/ad571add-0f5c-44e3-b4ed-d50b001b0a1e)
+![pic of mod menu](https://github.com/art0007i/3DashUtils/assets/19620451/f147837a-b249-428d-b998-dc1ed559734a)
+
 
 ## Building
 
