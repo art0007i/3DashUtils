@@ -36,6 +36,6 @@ public static class NoDeathAnimationPatch
     public static void Prefix()
     {
         var rand = new Random();
-        rand.Next(((int)OnGUI.chance), 100);
+        //rand.Next(((int)OnGUI.chance), 100); you'd need to access the chance var. I'll keep this in here for a moment, until i figure out what to do with it 
     }
 }
