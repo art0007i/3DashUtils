@@ -94,7 +94,14 @@ public class JumpscareScript : MonoBehaviour
         rect.anchorMax = new Vector2(0.5f, 0.5f);
         if(Jumpscare.jumpscareAudio != null)
         {
-            AudioSource.PlayClipAtPoint(Jumpscare.jumpscareAudio, Vector3.zero, 100f);
+            GameObject gameObject = new GameObject("One shot audio");
+            AudioSource audioSource = (AudioSource)gameObject.AddComponent(typeof(AudioSource));
+            audioSource.clip = Jumpscare.jumpscareAudio;
+            audioSource.spatialBlend = 0f;
+            audioSource.spatialize = false;
+            audioSource.volume = 100f;
+            audioSource.Play();
+            Object.Destroy(gameObject, audioSource.clip.length * ((Time.timeScale < 0.01f) ? 0.01f : Time.timeScale));
         }
     }
 }
