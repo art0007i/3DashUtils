@@ -12,13 +12,12 @@ namespace _3DashUtils.Mods.Visual;
 
 public class NoObjectFade : ToggleModule
 {
-    public static ConfigEntry<bool> option = _3DashUtils.ConfigFile.Bind("Visual", "NoObjectFade", false);
-    public override ConfigEntry<bool> Enabled => option;
-
     public override string ModuleName => "No Object Fade";
     public override string CategoryName => "Visual";
 
-    public override string Tooltip => "Disables the fade in animation for objects.";
+    public override string Description => "Disables the fade in animation for objects.";
+
+    protected override bool Default => false;
 }
 
 [HarmonyPatch(typeof(ItemScript), "Start")]
@@ -26,7 +25,7 @@ public static class NoObjectFadePatch
 {
     public static void Postfix(ItemScript __instance)
     {
-        if (NoObjectFade.option.Value)
+        if (Extensions.GetModule<NoObjectFade>().Enabled)
         {
             __instance.transform.localScale = new Vector3(1f, 1f, 1f);
         }

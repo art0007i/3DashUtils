@@ -50,6 +50,7 @@ namespace _3DashUtils.ModuleSystem
         
         /// <summary>
         /// If the module is considered to be a cheat.
+        /// This should only be true if the module is enabled and active. (for example SpeedHack with values >1 is not considered cheating)
         /// </summary>
         public abstract bool IsCheat { get; }
     }

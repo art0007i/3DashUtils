@@ -11,23 +11,22 @@ namespace _3DashUtils.Mods.Visual;
 
 internal class RenderFullLevel : ToggleModule
 {
-    public static ConfigEntry<bool> option = _3DashUtils.ConfigFile.Bind("Visual", "RenderFullLevel", false);
     public override string CategoryName => "Visual";
     public override string ModuleName => "Render Full Level";
-    public override ConfigEntry<bool> Enabled => option;
-    public override string Tooltip => "Renders the entire level at the same time.";
+    public override string Description => "Renders the entire level at the same time.";
+    protected override bool Default => false;
 
     public override void Update()
     {
         GameObject gameObject = GameObject.Find("WorldGenerator");
         if (!(gameObject == null))
         {
-            gameObject.GetComponent<WorldGenerator>().renderDistance = Enabled.Value ? float.PositiveInfinity : 14f;
+            gameObject.GetComponent<WorldGenerator>().renderDistance = Enabled ? float.PositiveInfinity : 14f;
         }
         GameObject gameObject2 = GameObject.Find("WorldGeneratorEditor");
         if (!(gameObject2 == null))
         {
-            gameObject2.GetComponent<WorldGeneratorEditor>().renderDistance = Enabled.Value ? float.PositiveInfinity : 14f;
+            gameObject2.GetComponent<WorldGeneratorEditor>().renderDistance = Enabled ? float.PositiveInfinity : 14f;
         }
     }
 }

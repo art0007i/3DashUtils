@@ -40,7 +40,7 @@ public class _3DashUtils : BaseUnityPlugin
     /// <summary>
     /// A list of all loaded <see cref="IMenuModule">modules</see>.
     /// </summary>
-	public static List<IMenuModule> moduleList = new();
+	public static HashSet<IMenuModule> moduleList = new();
     
     /// <summary>
     /// Contains a mapping of category names to <see cref="ModuleCategory"/> structs.
@@ -109,10 +109,9 @@ public class _3DashUtils : BaseUnityPlugin
 			}
         }
         Load = new GameObject();
-		Load.name = "3DMM Manager";
+		Load.name = "3DashUtils Manager";
 		Load.AddComponent<_3DashUtilsScript>();
-		UnityEngine.Object.DontDestroyOnLoad(Load);
-		Log.LogMessage("Mod Started!");
+		DontDestroyOnLoad(Load);
 		Harmony.PatchAll(Assembly);
 
 	}

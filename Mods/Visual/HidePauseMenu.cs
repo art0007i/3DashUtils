@@ -7,15 +7,13 @@ namespace _3DashUtils.Mods.Visual;
 
 public class HidePauseMenu : ToggleModule
 {
-    public static ConfigEntry<bool> option = _3DashUtils.ConfigFile.Bind("Visual", "HidePauseMenu", false);
-
-    public override ConfigEntry<bool> Enabled => option;
-
     public override string CategoryName => "Visual";
 
     public override string ModuleName => "Hide Pause Menu";
 
-    public override string Tooltip => "Makes the pause menu invisible.";
+    public override string Description => "Makes the pause menu invisible.";
+
+    protected override bool Default => false;
 
     internal void SetPauseMenuVisibility(bool visible)
     {
@@ -24,7 +22,7 @@ public class HidePauseMenu : ToggleModule
 
     public override void OnToggle()
     {
-        SetPauseMenuVisibility(!Enabled.Value && Extensions.GetPauseState());
+        SetPauseMenuVisibility(!Enabled && Extensions.GetPauseState());
     }
 }
 
@@ -33,6 +31,6 @@ class HidePauseMenuPatch
 {
     public static void Postfix(PauseMenuManager __instance)
     {
-        __instance.uiObject.SetActive(!HidePauseMenu.option.Value);
+        __instance.uiObject.SetActive(!Extensions.Enabled<HidePauseMenu>());
     }
 }

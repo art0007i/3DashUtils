@@ -10,16 +10,15 @@ public class InstantComplete : ToggleModule
     public override string CategoryName => "Player";
 
     public override string ModuleName => "Instant Complete";
+    public override bool IsCheat => Enabled;
 
-    public override ConfigEntry<bool> Enabled => option;
+    public override string Description => "Automatically wins any level you enter.";
 
-    public override bool IsCheat => Enabled.Value;
-
-    public override string Tooltip => "Automatically wins any level you enter.";
+    protected override bool Default => false;
 
     public override void Update()
     {
-        if (Enabled.Value)
+        if (Enabled)
         {
             Object.FindObjectOfType<PlayerScript>()?.Win();
         }

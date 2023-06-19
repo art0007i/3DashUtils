@@ -1,36 +1,47 @@
 ﻿using _3DashUtils.ModuleSystem;
+using _3DashUtils.ModuleSystem.Config;
 using BepInEx.Configuration;
+using HarmonyLib;
 using System.Reflection;
 using UnityEngine;
 
 namespace _3DashUtils.Mods.Player;
 
-public class SpeedHack : TextEditorModule<float>
+public class SpeedHack : ToggleModule
 {
-    public static ConfigEntry<bool> enabledOption = _3DashUtils.ConfigFile.Bind("Player", "SpeedHackEnabled", false);
-    public static ConfigEntry<float> valueOption = _3DashUtils.ConfigFile.Bind("Player", "SpeedHackValue", 1f);
-
     public override string CategoryName => "Player";
 
     public override float Priority => 0.11f;
 
-    public override ConfigEntry<float> Value => valueOption;
+    public static float Speed => speedConfig.Value;
+    public static ConfigOptionBase<float> speedConfig;
+    public static bool SpeedHackAudio => speedHackAudio.Value;
+    public static ConfigOptionBase<bool> speedHackAudio;
 
-    public override ConfigEntry<bool> Enabled => enabledOption;
+    public override string Description => "Changes the speed of the game.";
 
-    public override string Tooltip => "Changes the speed of the game.";
+    public override bool IsCheat => Enabled && Speed < 1;
 
-    public override bool IsCheat => Enabled.Value && Value.Value < 1;
+    protected override bool Default => false;
+
+    public SpeedHack()
+    {
+        speedConfig = new TextInputConfig<float>(this, "Speed", 1, "The speed that the game will play at.", TryParseText);
+        speedHackAudio = new ToggleConfigOption(this, "Affect Audio", false, "Determines if audio should be affected by SpeedHack.");
+    }
+
     public override void Update()
     {
         if (!Extensions.GetPauseState())
         {
-            Time.timeScale = Enabled.Value ? Value.Value : 1f;
+            Time.timeScale = Enabled ? Speed : 1f;
         }
-    }
+        var changePitch = SpeedHackAudio && Enabled;
+        Object.FindObjectsOfType<AudioSource>().Do(src => src.pitch = changePitch ? Speed : 1f);
+}
 
-    public override bool TryParseText(string text, out float parse)
+    public bool TryParseText(string text, out float parse)
     {
-        return float.TryParse(lastText, out parse) && parse > 0;
+        return float.TryParse(text, out parse) && parse > 0;
     }
 }
