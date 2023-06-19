@@ -87,7 +87,6 @@ public class ShowHitboxes : ToggleModule
             var render = m.gameObject.GetComponent<MeshRenderer>();
             if (render != null && !render.sharedMaterials.Contains(_3DashUtils.RedMaterial))
             {
-                _3DashUtils.Log.LogMessage("converting " + m.gameObject.name);
                 render.sharedMaterials = render.sharedMaterials.AddToArray(_3DashUtils.RedMaterial);
             }
         }
