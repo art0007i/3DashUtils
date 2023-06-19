@@ -38,6 +38,17 @@ public static class Extensions
     }
 
     /// <summary>
+    /// Returns true if the user is in keybind editing mode.
+    /// Use this function to add behavior to allow editing binds.
+    /// </summary>
+    /// <returns></returns>
+    public static bool EditingKeybinds()
+    {
+        // will be used for config system.
+        return false;
+    }
+
+    /// <summary>
     /// Returns true if the game is currently paused.
     /// <br/>
     /// Also returns false if the reflection somehow failed.
