@@ -28,9 +28,7 @@ namespace _3DashUtils.ModuleSystem
 
         public ToggleModule()
         {
-            _3DashUtils.Log.LogMessage("bound 1");
             ConfigEntry = _3DashUtils.ConfigFile.Bind(CategoryName, this.GetType().Name, Default, Description);
-            _3DashUtils.Log.LogMessage("bound 2");
             KeyBindConfigEntry = _3DashUtils.ConfigFile.Bind("Keybinds", this.GetType().Name, DefaultKey, "Keybind for toggling the " + this.GetType().Name + " Module");
         }
 
