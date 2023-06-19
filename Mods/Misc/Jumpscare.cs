@@ -29,7 +29,12 @@ public class Jumpscare : ToggleModule
 
     public Jumpscare()
     {
-        chanceConfig = new SliderConfig<double>(this, "Chance", 0.05, "The chance that a jumpscare will appear. 1 means always, 0 means never.", 0, 1);
+        chanceConfig = new TextInputConfig<double>(this, "Chance", 0.05, "The chance that a jumpscare will appear. 1 means always, 0 means never.", TryParseChance);
+    }
+
+    private bool TryParseChance(string text, out double value)
+    {
+        return double.TryParse(text, out value);
     }
 
     public override void Awake()
@@ -65,7 +70,7 @@ public class Jumpscare : ToggleModule
 [HarmonyPatch(typeof(PlayerScript), "Die")]
 public static class NoDeathAnimationPatch
 {
-    public static void Prefix()
+    public static void Postfix()
     {
         if (Extensions.Enabled<Jumpscare>() && Random.value < Jumpscare.Chance)
         {
