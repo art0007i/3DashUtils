@@ -83,15 +83,6 @@
   <ItemGroup>
     <PluginResources Include="Resources/PluginResources/*.*" />
   </ItemGroup>
-  <ItemGroup>
-    <None Remove="Resources\PluginResources\jumpscare.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <PluginResources Remove="Resources\PluginResources\jumpscare.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resources\PluginResources\jumpscare.png" />
-  </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(CopyToMods)'=='true'">
 	<MakeDir Directories="$(PluginPath)" Condition="!Exists('$(PluginPath)')" />
 	<MakeDir Directories="$(PluginPath)/Resources/" Condition="!Exists('$(PluginPath)/Resources/')" />
