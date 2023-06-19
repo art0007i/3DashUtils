@@ -1,5 +1,6 @@
 ﻿using _3DashUtils.Mods.Hidden;
 using _3DashUtils.ModuleSystem;
+using _3DashUtils.ModuleSystem.Config;
 using BepInEx.Configuration;
 using HarmonyLib;
 using System.IO;
@@ -10,21 +11,26 @@ using UnityEngine.UI;
 
 namespace _3DashUtils.Mods.Misc;
 
-public class Jumpscare : TextEditorModule<double>
+public class Jumpscare : ToggleModule
 {
-    public static ConfigEntry<bool> option = _3DashUtils.ConfigFile.Bind("Misc", "Jumpscare", false);
-    public static ConfigEntry<double> valueOption = _3DashUtils.ConfigFile.Bind("Misc", "JumpscareChance", 0.05);
     public override string CategoryName => "Misc";
 
     public override string ModuleName => "Jumpscare";
 
-    public override ConfigEntry<bool> Enabled => option;
-    public override ConfigEntry<double> Value => valueOption;
+    public override string Description => "Jumpscares the player when said player dies, with provided chance by the user.";
 
-    public override string Tooltip => "Jumpscares the player when said player dies, with provided chance by the user.";
+    protected override bool Default => false;
 
     public static Sprite jumpscareSprite = null;
     public static AudioClip jumpscareAudio = null;
+
+    public static double Chance => chanceConfig.Value;
+    private static ConfigOptionBase<double> chanceConfig;
+
+    public Jumpscare()
+    {
+        chanceConfig = new SliderConfig<double>(this, "Chance", 0.05, "The chance that a jumpscare will appear. 1 means always, 0 means never.", 0, 1);
+    }
 
     public override void Awake()
     {
@@ -53,12 +59,6 @@ public class Jumpscare : TextEditorModule<double>
         ImageConversion.LoadImage(jumpscareTex, bytes);
         jumpscareTex.Apply(true, true);
         jumpscareSprite = Sprite.Create(jumpscareTex, new Rect(0.0f, 0.0f, jumpscareTex.width, jumpscareTex.height), new Vector2(0.5f, 0.5f), 100.0f);
-
-        
-    }
-    public override bool TryParseText(string text, out double parse)
-    {
-        return double.TryParse(text, out parse) && parse > 0 && parse <= 1;
     }
 }
 
@@ -67,7 +67,7 @@ public static class NoDeathAnimationPatch
 {
     public static void Prefix()
     {
-        if (UnityEngine.Random.value < Jumpscare.valueOption.Value)
+        if (Extensions.Enabled<Jumpscare>() && Random.value < Jumpscare.Chance)
         {
             var gamer = new GameObject("Jumpscare");
             gamer.transform.SetParent(GameObject.Find("PauseCanvas").transform, false);

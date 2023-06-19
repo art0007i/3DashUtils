@@ -13,14 +13,13 @@ namespace _3DashUtils.Mods.Editor;
 
 public class MoreLevelSlots : ToggleModule
 {
-    public static ConfigEntry<bool> option = _3DashUtils.ConfigFile.Bind("Editor", "MoreLevelSlots", false);
     public override string CategoryName => "Editor";
 
     public override string ModuleName => "More Level Slots";
 
-    public override string Tooltip => "Allows you to have infinite level slots so you can create as many levels as you want!";
+    public override string Description => "Allows you to have infinite level slots so you can create as many levels as you want!";
 
-    public override ConfigEntry<bool> Enabled => option;
+    protected override bool Default => false;
 
     private void DupeFile(SaveSelect saveSelect, int n = 1)
     {
@@ -47,7 +46,7 @@ public class MoreLevelSlots : ToggleModule
     {
         SceneManager.activeSceneChanged += (oldScene, newScene) =>
         {
-            if (!option.Value || newScene.name != "Save Select") return;
+            if (!Enabled || newScene.name != "Save Select") return;
 
 
             var buttonsRoot = newScene.GetRootGameObjects().Select((g) => g.transform.Find("Buttons")).FirstOrDefault((g) => g != null);

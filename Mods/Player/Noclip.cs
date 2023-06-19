@@ -12,28 +12,24 @@ namespace _3DashUtils.Mods.Player;
 
 public class Noclip : ToggleModule
 {
-    public static ConfigEntry<bool> noclip = _3DashUtils.ConfigFile.Bind("Player", "Noclip", false);
     public override string CategoryName => "Player";
 
-    public override ConfigEntry<bool> Enabled => noclip;
+    public override string Description => "Prevents the player from dying.";
 
-    public override string Tooltip => "Prevents the player from dying.";
+    public override bool IsCheat => Enabled;
 
-    public override bool IsCheat => Enabled.Value;
+    protected override bool Default => false;
 
     public override void Update()
     {
-        if (noclip.Value)
+        if (Enabled)
         {
-            GameObject.FindGameObjectsWithTag("Hazard").Do(go =>
-            {
-                go.GetComponentsInChildren<Collider>().Do(coll => coll.enabled = false);
-            });
+            GameObject.FindGameObjectsWithTag("Hazard").SelectMany(go => go.GetComponents<Collider>()).Do(coll => coll.enabled = false);
         }
     }
     public override void OnToggle()
     {
-        if (Enabled.Value == false)
+        if (Enabled == false)
         {
             GameObject.FindGameObjectsWithTag("Hazard").Do(go =>
             {
@@ -48,6 +44,6 @@ public class NoClipPatch
 {
     public static bool Prefix(bool deathOverride)
     {
-        return deathOverride || !Noclip.noclip.Value;
+        return deathOverride || !Extensions.Enabled<Noclip>();
     }
 }

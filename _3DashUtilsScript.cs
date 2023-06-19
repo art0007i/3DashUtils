@@ -25,6 +25,7 @@ public class _3DashUtilsScript : MonoBehaviour
         _3DashUtils.moduleList.Do((p) => p.Update());
 	}
 
+    private static GUIStyle tooltipStyle = null;
 	public void OnGUI()
     {
         if (MenuHandler.menuOpen.Value)
@@ -49,21 +50,21 @@ public class _3DashUtilsScript : MonoBehaviour
 						lastTooltipContent = GUI.tooltip;
 						lastTooltipTime = Time.realtimeSinceStartup;
                     }
-
                     GUI.DragWindow();
                 }, key);
             }
 
-			//var tool = _3DashUtils.moduleCategories.Where(c => !string.IsNullOrWhiteSpace(c.Value.tooltip)).FirstOrDefault();
 			if (!string.IsNullOrWhiteSpace(lastTooltipContent) && Time.realtimeSinceStartup - lastTooltipTime < 0.5)
 			{
-                var m = Input.mousePosition;
-                var style = new GUIStyle(GUI.skin.button);
+				if(tooltipStyle == null)
+				{
+                    tooltipStyle = new GUIStyle(GUI.skin.button);
+                    tooltipStyle.fontSize = 16;
+                }
                 var content = new GUIContent(lastTooltipContent);
-                style.fontSize = 16;
-                var size = style.CalcSize(content);
+                var size = tooltipStyle.CalcSize(content);
                 var rect = new Rect(20, Screen.height - 60 - size.y, size.x + 20, size.y + 2);
-                GUI.Box(rect, content, style);
+                GUI.Box(rect, content, tooltipStyle);
             }
         }
         _3DashUtils.moduleList.Do((p) => p.OnUnityGUI());
