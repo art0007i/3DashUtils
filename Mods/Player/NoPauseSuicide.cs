@@ -17,7 +17,7 @@ public class NoPauseSuicide : ToggleModule
 
     public override string Description => "Prevents you from dying by pressing backspace while paused.";
 
-    protected override bool Default => false;
+    protected override bool Default => true;
 }
 
 [HarmonyPatch(typeof(PlayerScript), nameof(PlayerScript.Die))]
