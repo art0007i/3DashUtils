@@ -11,15 +11,13 @@ namespace _3DashUtils.Mods.Player;
 
 public class NoPauseSuicide : ToggleModule
 {
-    public static ConfigEntry<bool> option = _3DashUtils.ConfigFile.Bind("Player", "NoPauseSuicide", false);
-
-    public override ConfigEntry<bool> Enabled => option;
-
     public override string CategoryName => "Player";
 
     public override string ModuleName => "No Pause Suicide";
 
-    public override string Tooltip => "Prevents you from dying by pressing backspace while paused.";
+    public override string Description => "Prevents you from dying by pressing backspace while paused.";
+
+    protected override bool Default => false;
 }
 
 [HarmonyPatch(typeof(PlayerScript), nameof(PlayerScript.Die))]
@@ -27,6 +25,6 @@ public class NoPauseSuicidePatch
 {
     public static bool Prefix()
     {
-        return !(NoPauseSuicide.option.Value && Extensions.GetPauseState());
+        return !(Extensions.Enabled<NoPauseSuicide>() && Extensions.GetPauseState());
     }
 }

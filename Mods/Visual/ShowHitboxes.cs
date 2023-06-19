@@ -11,14 +11,13 @@ namespace _3DashUtils.Mods.Visual;
 
 public class ShowHitboxes : ToggleModule
 {
-    public static ConfigEntry<bool> option = _3DashUtils.ConfigFile.Bind("Visual", "ShowHitboxes", false);
-    public override ConfigEntry<bool> Enabled => option;
-
     public override string CategoryName => "Visual";
 
     public override string ModuleName => "Show Hitboxes";
 
-    public override string Tooltip => "Shows hitboxes of all interactable objects.";
+    public override string Description => "Shows hitboxes of all interactable objects.";
+
+    protected override bool Default => false;
 
     public override void Start()
     {
@@ -65,7 +64,7 @@ public class ShowHitboxes : ToggleModule
 
     public override void Update()
     {
-        if (!Enabled.Value) return;
+        if (!Enabled) return;
         RenderHitboxes();
     }
 

@@ -9,14 +9,13 @@ namespace _3DashUtils.Mods.Player;
 
 public class PracticeMusic : ToggleModule
 {
-    public static ConfigEntry<bool> option = _3DashUtils.ConfigFile.Bind("Player", "PracticeMusic", false);
-    public override ConfigEntry<bool> Enabled => option;
-
     public override string CategoryName => "Player";
 
     public override string ModuleName => "Practice Music Hack";
 
-    public override string Tooltip => "Plays the normal song during practice mode.";
+    public override string Description => "Plays the normal song during practice mode.";
+
+    protected override bool Default => false;
 }
 
 [HarmonyPatch(typeof(PlayerScript), "Awake")]
@@ -24,7 +23,7 @@ public static class PracticeMusicPatch
 {
     public static void Postfix(PlayerScript __instance)
     {
-        if (PauseMenuManager.inPracticeMode && PracticeMusic.option.Value)
+        if (PauseMenuManager.inPracticeMode && Extensions.Enabled<PracticeMusic>())
         {
             GameObject recentCheckpoint = PlayerScript.GetRecentCheckpoint();
             if ((bool)recentCheckpoint)
@@ -45,7 +44,7 @@ public static class PracticeMusicPatch2
 {
     public static void Postfix()
     {
-        if (PauseMenuManager.inPracticeMode && PracticeMusic.option.Value)
+        if (PauseMenuManager.inPracticeMode && Extensions.Enabled<PracticeMusic>())
         {
             GameObject recentCheckpoint = PlayerScript.GetRecentCheckpoint();
             if ((bool)recentCheckpoint)
@@ -70,7 +69,7 @@ public static class PracticeMusicPatch3
 {
     public static bool Prefix(PauseMenuManager __instance)
     {
-        if (PracticeMusic.option.Value)
+        if (Extensions.Enabled<PracticeMusic>())
         {
             PauseMenuManager.inPracticeMode = true;
             PauseMenuManager.DestroyAllCheckpoints();

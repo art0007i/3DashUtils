@@ -1,4 +1,5 @@
 ﻿using _3DashUtils.ModuleSystem;
+using _3DashUtils.ModuleSystem.Config;
 using BepInEx.Configuration;
 using System;
 using System.Collections.Generic;
@@ -11,26 +12,38 @@ namespace _3DashUtils.Mods.Visual;
 
 internal class CheatIndicator : ToggleModule
 {
-    public static ConfigEntry<bool> option = _3DashUtils.ConfigFile.Bind("Visual", "CheatIndicator", false);
     public override string CategoryName => "Visual";
 
     public override string ModuleName => "Cheat Indicator";
 
-    public override ConfigEntry<bool> Enabled => option;
+    public override string Description => "Displays a red dot when playing a level if any cheat modules are turned on.";
 
-    public override string Tooltip => "Displays a red dot when playing a level if any cheat modules are turned on.";
+    public static bool ShowNonCheats => showNonCheatsOption.Value;
+
+    protected override bool Default => false;
+
+    public static ConfigOptionBase<bool> showNonCheatsOption;
 
     const int spacing = 5;
     const int fontSize = 24;
 
+    public CheatIndicator() {
+        showNonCheatsOption = new ToggleConfigOption(this, "Show Non Cheats", false, "Show a green dot when no cheats are enabled.");
+    }
+
+    private static GUIStyle dotStyle;
     public override void OnUnityGUI()
     {
-        if(Enabled.Value && Extensions.CheatsEnabled())
+        var c = Extensions.CheatsEnabled();
+        if (Enabled && (c || ShowNonCheats))
         {
-            var style = new GUIStyle(GUI.skin.label);
-            style.fontSize = fontSize;
-            style.normal.textColor = Color.red;
-            GUI.Label(new Rect(spacing, Screen.height - fontSize - spacing, 200, fontSize * 2), "●", style);
+            if(dotStyle == null)
+            {
+                dotStyle = new GUIStyle(GUI.skin.label);
+                dotStyle.fontSize = fontSize;
+            }
+            dotStyle.normal.textColor = c ? Color.red : Color.green;
+            GUI.Label(new Rect(spacing, Screen.height - (fontSize*2) - spacing, 200, fontSize * 2), "●", dotStyle);
         }
 
         //add thingy when suboption is not kil to make it green when not epic gaming hacking
