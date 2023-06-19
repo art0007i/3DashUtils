@@ -43,7 +43,7 @@ internal class CheatIndicator : ToggleModule
                 dotStyle.fontSize = fontSize;
             }
             dotStyle.normal.textColor = c ? Color.red : Color.green;
-            GUI.Label(new Rect(spacing, Screen.height - (fontSize*2) - spacing, 200, fontSize * 2), "●", dotStyle);
+            GUI.Label(new Rect(spacing, Screen.height - fontSize - spacing, 200, fontSize * 2), "●", dotStyle);
         }
     }
 }
