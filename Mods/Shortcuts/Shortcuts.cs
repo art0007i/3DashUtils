@@ -4,6 +4,7 @@ using UnityEngine;
 using _3DashUtils.ModuleSystem;
 using UnityEngine.UI;
 using BepInEx.Configuration;
+using HarmonyLib;
 
 namespace _3DashUtils.Mods.Shortcuts;
 
@@ -25,7 +26,7 @@ public class Shortcuts : ModuleBase
 
     private bool waitingForSceneChange;
 
-    private List<ConfigEntry<KeyCode>> keyBinds;
+    private List<ConfigEntry<KeyCode>> keyBinds = new();
 
     public Shortcuts()
     {
@@ -51,6 +52,9 @@ public class Shortcuts : ModuleBase
         };
     }
 
+    public static string levelIdText;
+    public static bool dontAutoLoad;
+
     public override void OnGUI()
     {
         foreach(var shortcut in shortcuts)
@@ -67,10 +71,36 @@ public class Shortcuts : ModuleBase
             SceneManager.LoadScene("Menu");
         }
 
+        GUILayout.BeginHorizontal();
+        levelIdText = GUILayout.TextArea(levelIdText, GUILayout.Width(50));
+        if(GUILayout.Button("Open Level ID", GUILayout.ExpandWidth(true)))
+        {
+            dontAutoLoad = true;
+            SceneManager.LoadScene("Online Levels Hub");
+        }
+        GUILayout.EndHorizontal();
+
         var quitText = "Quit Game";
         if (GUILayout.Button($"<color=orange>{quitText}</color>"))
         {
             Application.Quit();
         }
+    }
+}
+
+[HarmonyPatch(typeof(OnlineLevelsHub), nameof(OnlineLevelsHub.Awake))]
+class ShortcutsPatch
+{
+    public static bool Prefix(OnlineLevelsHub __instance)
+    {
+        var d = int.TryParse(Shortcuts.levelIdText, out var levelId) && Shortcuts.dontAutoLoad;
+        Shortcuts.dontAutoLoad = false;
+        if (d)
+        {
+            __instance.LoadLevel(levelId);
+        }
+
+        // if autoload is true, return false (skips func which loads online levels)
+        return !d;
     }
 }
