@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine;
 using _3DashUtils.ModuleSystem;
 using UnityEngine.UI;
+using BepInEx.Configuration;
 
 namespace _3DashUtils.Mods.Shortcuts;
 
@@ -23,6 +24,17 @@ public class Shortcuts : ModuleBase
     };
 
     private bool waitingForSceneChange;
+
+    private List<ConfigEntry<KeyCode>> keyBinds;
+
+    public Shortcuts()
+    {
+        keyBinds.Add(_3DashUtils.ConfigFile.Bind("Keybinds", "MainMenuShortcut", KeyCode.None, "Keybind for loading the main menu instantly."));
+        keyBinds.Add(_3DashUtils.ConfigFile.Bind("Keybinds", "LevelEditorShortcut", KeyCode.None, "Keybind for loading the level editor instantly."));
+        keyBinds.Add(_3DashUtils.ConfigFile.Bind("Keybinds", "OnlineLevelsShortcut", KeyCode.None, "Keybind for loading the online levels hub instantly."));
+        keyBinds.Add(_3DashUtils.ConfigFile.Bind("Keybinds", "OfflineLevelsShortcut", KeyCode.None, "Keybind for loading the offline levels page instantly."));
+        keyBinds.Add(_3DashUtils.ConfigFile.Bind("Keybinds", "QuitGameShortcut", KeyCode.None, "Keybind for quitting the game instantly."));
+    }
 
     public override void Awake()
     {
@@ -55,7 +67,8 @@ public class Shortcuts : ModuleBase
             SceneManager.LoadScene("Menu");
         }
 
-        if(GUILayout.Button("<color=orange>Quit Game</color>"))
+        var quitText = "Quit Game";
+        if (GUILayout.Button($"<color=orange>{quitText}</color>"))
         {
             Application.Quit();
         }
