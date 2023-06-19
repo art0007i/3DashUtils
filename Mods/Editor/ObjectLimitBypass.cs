@@ -13,7 +13,7 @@ public class ObjectLimitBypass : ToggleModule
 
     public override string Description => "Increases the object limit to 2147483647.";
 
-    protected override bool Default => false;
+    protected override bool Default => true;
 }
 
 [HarmonyPatch(typeof(FlatEditor), "Update")]
