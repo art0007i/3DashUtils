@@ -20,7 +20,7 @@ internal class CheatIndicator : ToggleModule
 
     public static bool ShowNonCheats => showNonCheatsOption.Value;
 
-    protected override bool Default => false;
+    protected override bool Default => true;
 
     public static ConfigOptionBase<bool> showNonCheatsOption;
 
@@ -45,7 +45,5 @@ internal class CheatIndicator : ToggleModule
             dotStyle.normal.textColor = c ? Color.red : Color.green;
             GUI.Label(new Rect(spacing, Screen.height - (fontSize*2) - spacing, 200, fontSize * 2), "●", dotStyle);
         }
-
-        //add thingy when suboption is not kil to make it green when not epic gaming hacking
     }
 }

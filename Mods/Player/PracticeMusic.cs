@@ -15,7 +15,7 @@ public class PracticeMusic : ToggleModule
 
     public override string Description => "Plays the normal song during practice mode.";
 
-    protected override bool Default => false;
+    protected override bool Default => true;
 }
 
 [HarmonyPatch(typeof(PlayerScript), "Awake")]
