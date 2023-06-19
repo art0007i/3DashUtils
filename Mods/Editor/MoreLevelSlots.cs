@@ -19,7 +19,7 @@ public class MoreLevelSlots : ToggleModule
 
     public override string Description => "Allows you to have infinite level slots so you can create as many levels as you want!";
 
-    protected override bool Default => false;
+    protected override bool Default => true;
 
     private void DupeFile(SaveSelect saveSelect, int n = 1)
     {
