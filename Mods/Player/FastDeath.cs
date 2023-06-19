@@ -14,7 +14,7 @@ public class FastDeath : ToggleModule
     public override string Description => "Changes the time to respawn the player after dying.";
     protected override bool Default => false;
 
-    public static float Time;
+    public static float Time => timeOption.Value;
     private static ConfigOptionBase<float> timeOption;
     public FastDeath()
     {
@@ -31,14 +31,16 @@ public static class NoDeathAnimationPatch
 {
     public static bool Prefix(DeathScript __instance)
     {
-        var e = Extensions.Enabled<FastDeath>();
-        if (e)
+        if (Extensions.Enabled<FastDeath>())
         {
             var t = Traverse.Create(__instance).Field("timePassed");
             var n = t.GetValue<float>() + Time.deltaTime;
             t.SetValue(n);
-            if(n > FastDeath.Time) SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            if (n >= FastDeath.Time) {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
+            return false;
         }
-        return !e;
+        return true;
     }
 }
