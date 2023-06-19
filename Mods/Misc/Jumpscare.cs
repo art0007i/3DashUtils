@@ -1,4 +1,5 @@
 ﻿using _3DashUtils.Mods.Hidden;
+using _3DashUtils.Mods.Player;
 using _3DashUtils.ModuleSystem;
 using _3DashUtils.ModuleSystem.Config;
 using BepInEx.Configuration;
@@ -67,11 +68,13 @@ public class Jumpscare : ToggleModule
     }
 }
 
-[HarmonyPatch(typeof(PlayerScript), "Die")]
+[HarmonyPatch(typeof(PlayerScript), nameof(PlayerScript.Die))]
 public static class NoDeathAnimationPatch
 {
-    public static void Postfix()
+    public static void Postfix(bool deathOverride)
     {
+        if (!deathOverride && Extensions.Enabled<Noclip>()) return;
+
         if (Extensions.Enabled<Jumpscare>() && Random.value < Jumpscare.Chance)
         {
             var gamer = new GameObject("Jumpscare");
