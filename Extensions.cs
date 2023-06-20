@@ -153,7 +153,6 @@ public static class Extensions
     public static string GetPluginDataPath()
     {
 #if DEBUG
-        _3DashUtils.Log.LogMessage(Path.GetDirectoryName(typeof(PlayerScript).Assembly.Location) + "/../../BepInEx/scripts");
         // horrible but the other way doesnt work with script engine
         return Path.GetFullPath(Path.GetDirectoryName(typeof(PlayerScript).Assembly.Location) + "/../../BepInEx/scripts");
 #else
@@ -181,5 +180,10 @@ public static class Extensions
     public static T FindByTag<T>(string tag) where T : Component
     {
         return GameObject.FindGameObjectWithTag(tag).GetComponent<T>();
+    }
+
+    public static T CastDelegate<T>(Delegate d) where T : Delegate
+    {
+        return (T)d.Method.CreateDelegate(typeof(T));
     }
 }
