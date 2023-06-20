@@ -23,7 +23,7 @@ namespace _3DashUtils.ModuleSystem
         protected abstract bool Default { get; }
         protected virtual KeyCode DefaultKey { get => KeyCode.None; }
 
-        public virtual string Description => null;
+        public virtual string Description => "";
 
 
         public ToggleModule()
@@ -40,25 +40,10 @@ namespace _3DashUtils.ModuleSystem
 
         public virtual void OnToggle() { }
 
-
-        private static GUIStyle configButtonStyle;
-        private static GUIStyle configLayoutStyle;
         public override void OnGUI()
         {
             GUILayout.BeginHorizontal();
             {
-                if(configButtonStyle == null)
-                {
-                    configButtonStyle = new GUIStyle(GUI.skin.button);
-                    configButtonStyle.alignment = TextAnchor.MiddleCenter;
-                }
-                if (configLayoutStyle == null)
-                {
-                    // keeping this for when I want to re-style the ui maybe?
-                    configLayoutStyle = new GUIStyle(GUI.skin.box);
-                }
-
-
                 var text = $"{ModuleName}: " + Extensions.GetEnabledText(Enabled);
                 string tip = null;
                 if (Description != null)
@@ -73,8 +58,8 @@ namespace _3DashUtils.ModuleSystem
                 if(ConfigOptions.Count > 0)
                 {
                     var content = new GUIContent(settingsOpen ? "˃" : "˅", tip);
-                    var width = configButtonStyle.CalcHeight(content, 1f);
-                    if (GUILayout.Button(content, configButtonStyle, GUILayout.Width(width)))
+                    var width = GUIStyles.ConfigButton.CalcHeight(content, 1f);
+                    if (GUILayout.Button(content, GUIStyles.ConfigButton, GUILayout.Width(width)))
                     {
                         settingsOpen = !settingsOpen;
                     }
@@ -84,23 +69,10 @@ namespace _3DashUtils.ModuleSystem
             // no need to check list size here, because you cannot open the settings
             if (settingsOpen)
             {
-                
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(10f);
-                //optionStyle.normal.background = Texture2D.whiteTexture;
-                GUILayout.BeginVertical(configLayoutStyle);
-                {
-                    foreach (var configOp in ConfigOptions)
-                    {
-
-                        GUILayout.BeginHorizontal(new GUIContent("", Extensions.GenerateTooltip(configOp)), GUIStyle.none, GUILayout.ExpandHeight(false));
-                        GUILayout.Label(configOp.Name, GUILayout.ExpandWidth(true));
-                        //GUILayout.BeginHorizontal(GUILayout.Width(50f));
-                        configOp.OnGUI();
-                        //GUILayout.EndHorizontal();
-                        GUILayout.EndHorizontal();
-                    }
-                }
+                GUILayout.BeginVertical(GUIStyles.ConfigLayout);
+                this.BuildConfigGUI();
                 GUILayout.EndVertical();
                 GUILayout.EndHorizontal();
                 GUILayout.Space(10f);

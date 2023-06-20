@@ -25,7 +25,6 @@ public class _3DashUtilsScript : MonoBehaviour
         _3DashUtils.moduleList.Do((p) => p.Update());
 	}
 
-    private static GUIStyle tooltipStyle = null;
 	public void OnGUI()
     {
         if (MenuHandler.menuOpen.Value)
@@ -56,15 +55,10 @@ public class _3DashUtilsScript : MonoBehaviour
 
 			if (!string.IsNullOrWhiteSpace(lastTooltipContent) && Time.realtimeSinceStartup - lastTooltipTime < 0.5)
 			{
-				if(tooltipStyle == null)
-				{
-                    tooltipStyle = new GUIStyle(GUI.skin.button);
-                    tooltipStyle.fontSize = 16;
-                }
                 var content = new GUIContent(lastTooltipContent);
-                var size = tooltipStyle.CalcSize(content);
+                var size = GUIStyles.Tooltip.CalcSize(content);
                 var rect = new Rect(20, Screen.height - 60 - size.y, size.x + 20, size.y + 2);
-                GUI.Box(rect, content, tooltipStyle);
+                GUI.Box(rect, content, GUIStyles.Tooltip);
             }
         }
         _3DashUtils.moduleList.Do((p) => p.OnUnityGUI());
