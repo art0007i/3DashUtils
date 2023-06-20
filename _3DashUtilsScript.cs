@@ -1,7 +1,6 @@
 using _3DashUtils.Mods.Hidden;
 using HarmonyLib;
 using System;
-using System.Linq;
 using UnityEngine;
 
 namespace _3DashUtils;

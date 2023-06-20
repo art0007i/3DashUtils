@@ -1,6 +1,5 @@
 ﻿using BepInEx.Configuration;
 using System;
-using System.Net;
 
 namespace _3DashUtils.ModuleSystem.Config;
 

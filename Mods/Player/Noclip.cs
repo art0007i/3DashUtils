@@ -1,11 +1,6 @@
 ﻿using _3DashUtils.ModuleSystem;
-using BepInEx.Configuration;
 using HarmonyLib;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace _3DashUtils.Mods.Player;

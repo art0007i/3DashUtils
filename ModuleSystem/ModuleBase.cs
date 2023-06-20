@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace _3DashUtils.ModuleSystem;
+﻿namespace _3DashUtils.ModuleSystem;
 
 /// <summary>
 /// The class that you should inherit when making a new module.
