@@ -24,7 +24,7 @@ public class SpeedHack : ToggleModule
 
     public SpeedHack()
     {
-        speedConfig = new TextInputConfig<float>(this, "Speed", 1, "The speed that the game will play at.", TryParseText);
+        speedConfig = new TextInputConfig<float>(this, "Speed", 1, "The speed that the game will play at.", (v)=>v>0);
         speedHackAudio = new ToggleConfigOption(this, "Affect Audio", true, "Determines if audio should be affected by SpeedHack.");
     }
 
@@ -36,10 +36,5 @@ public class SpeedHack : ToggleModule
         }
         var changePitch = SpeedHackAudio && Enabled;
         Object.FindObjectsOfType<AudioSource>().Do(src => src.pitch = changePitch ? Speed : 1f);
-}
-
-    public bool TryParseText(string text, out float parse)
-    {
-        return float.TryParse(text, out parse) && parse > 0;
     }
 }

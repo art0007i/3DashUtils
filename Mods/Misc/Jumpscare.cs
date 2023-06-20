@@ -29,14 +29,9 @@ public class Jumpscare : ToggleModule
 
     public Jumpscare()
     {
-        chanceConfig = new TextInputConfig<double>(this, "Chance", 0.05, "The chance that a jumpscare will appear. 1 means always, 0 means never.", TryParseChance);
+        // inclusive bounds because why not let people make impossible jumpscare or always jumpscare
+        chanceConfig = new TextInputConfig<double>(this, "Chance", 0.05, "The chance that a jumpscare will appear. 1 means always, 0 means never.", (v)=>v >= 0 && v <= 1);
     }
-
-    private bool TryParseChance(string text, out double value)
-    {
-        return double.TryParse(text, out value);
-    }
-
     public override void Awake()
     {
         base.Awake();

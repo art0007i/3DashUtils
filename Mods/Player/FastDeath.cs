@@ -17,11 +17,7 @@ public class FastDeath : ToggleModule
     private static ConfigOptionBase<float> timeOption;
     public FastDeath()
     {
-        timeOption = new TextInputConfig<float>(this, "Time", 0, "The time that it takes the player to respawn. (1.2 is the base game default)", TryParseTime);
-    }
-    public static bool TryParseTime(string text, out float value)
-    {
-        return float.TryParse(text, out value) && value >= 0;
+        timeOption = new TextInputConfig<float>(this, "Time", 0, "The time that it takes the player to respawn. (1.2 is the base game default)", (v)=>v>=0);
     }
 }
 

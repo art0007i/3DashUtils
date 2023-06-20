@@ -3,6 +3,7 @@ using System.Linq;
 using Gizmos = Popcron.Gizmos;
 using UnityEngine;
 using _3DashUtils.ModuleSystem;
+using UnityEngine.SceneManagement;
 
 namespace _3DashUtils.Mods.Visual;
 
@@ -19,6 +20,7 @@ public class ShowHitboxes : ToggleModule
     public override void Start()
     {
         Gizmos.Enabled = true;
+        Gizmos.FrustumCulling = true;
         Gizmos.CameraFilter += (c) =>
         {
             // main cameras only by default. but this game has no main cams xddd
@@ -52,11 +54,17 @@ public class ShowHitboxes : ToggleModule
         GameObject.FindGameObjectsWithTag("Orb").SelectMany(p => p.GetComponents<Collider>())
             .Do(coll => RenderCollider(coll, new Color(1f, 0.5f, 0f)));
 
+        SceneManager.GetActiveScene().GetRootGameObjects()
+            .Where(go => go.name.Contains("Pad") || go.name.Contains("Portal"))
+            .SelectMany(go => go.GetComponentsInChildren<Collider>())
+            .Do((coll) => RenderCollider(coll, new Color(1, 0.5f, 0)));
+        /*
         Object.FindObjectsOfType<PadScript>().SelectMany(p => p.gameObject.GetComponents<Collider>())
             .Do(coll => RenderCollider(coll, new Color(1f, 0.5f, 0f)));
 
         Object.FindObjectsOfType<PortalScript>().SelectMany(p => p.gameObject.GetComponents<Collider>())
-            .Do(coll => RenderCollider(coll, new Color(1f, 0.5f, 0f)));
+            .Do(coll => RenderCollider(coll, new Color(1f, 0.5f, 0f)));*/
+
     }
 
     public override void Update()
