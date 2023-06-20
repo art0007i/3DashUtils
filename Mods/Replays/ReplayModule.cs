@@ -14,7 +14,6 @@ namespace _3DashUtils.Mods.Replays;
 
 public enum ReplayMode
 {
-    None,
     Recording,
     Replaying
 }
@@ -26,8 +25,15 @@ public class ReplayModule : ToggleModule
 
     public override string Description => "Allows you to record and play replay files";
 
+    // these 2 are for recording
     static public double lastOffset;
+    static public bool lastClick = false;
+
+    // these 2 are for playback
     public static int lastKframe = -1;
+    public static bool shouldClick;
+
+    static public ClickReplay testReplay = new();
 
     public static double CurrentTime => lastOffset + Time.timeSinceLevelLoadAsDouble;
 
@@ -35,17 +41,14 @@ public class ReplayModule : ToggleModule
 
     protected override bool Default => false;
 
-    public static ConfigEntry<ReplayMode> modeConfig = _3DashUtils.ConfigFile.Bind("Replays", "Mode", ReplayMode.None, "Current mode of the ReplayModule.");
+    public static ConfigEntry<ReplayMode> modeConfig = _3DashUtils.ConfigFile.Bind("Replays", "Mode", ReplayMode.Recording, "Current mode of the ReplayModule.");
 
-    static public ClickReplay testReplay = new();
-    public bool lastClick = false;
 
     string path = Path.Combine(Extensions.GetPluginDataPath(), "Replays", "testMacro.3dr"); //3dash replay (.3dr)
 
     public override void Awake()
     {
         Directory.CreateDirectory(Path.Combine(Extensions.GetPluginDataPath(), "Replays"));
-        
     }
 
     public override void OnGUI()
@@ -53,47 +56,8 @@ public class ReplayModule : ToggleModule
         base.OnGUI();
         //var w = GUILayoutUtility.GetLastRect().width /2;
         var SelectedButtonStyle = new GUIStyle(GUI.skin.button);
-        var nn = (ReplayMode)(GUILayout.Toolbar((int)Mode - 1, new string[] { "Record", "Replay" })+1);
+        Mode = (ReplayMode)GUILayout.Toolbar((int)Mode, new string[] { "Record", "Replay" });
 
-        var last = GUILayoutUtility.GetLastRect();
-        if(Event.current.type == EventType.MouseDown && last.Contains(Event.current.mousePosition))
-        {
-            if(nn == Mode)
-            {
-                Mode = ReplayMode.None;
-            }
-        }
-        else
-        {
-            Mode = nn;
-        }
-        /*
-        GUILayout.BeginHorizontal();
-        if (GUILayout.Button("Record", GUILayout.Width(w)))
-        {
-            if(Mode == ReplayMode.Recording)
-            {
-                Mode = ReplayMode.None;
-            }
-            else
-            {
-                Mode = ReplayMode.Recording;
-            }
-        }
-        if(GUILayout.Button("Replay", GUILayout.Width(w)))
-        {
-
-            if (Mode == ReplayMode.Replaying)
-            {
-                Mode = ReplayMode.None;
-            }
-            else
-            {
-                Mode = ReplayMode.Replaying;
-            }
-        }
-        GUILayout.EndHorizontal();
-        */
         if (GUILayout.Button("Save Replay"))
         {
             File.WriteAllText(path, ReplayConverter.ReplayToString(testReplay));
@@ -117,10 +81,6 @@ public class ReplayModule : ToggleModule
         }
     }
 
-    public override void Update()
-    {
-        
-    }
 
     /*
         this is how it should look:
@@ -132,11 +92,12 @@ public class ReplayModule : ToggleModule
         |  record   |  |   replay |
         -------------  ------------
 
-        click at 123ms, release at 256ms (.123 + .133)
+        click at 123ms, release at 256ms    
          \/
-        0.123;0.133
+        +0.123
+        -0.256
         any line that doesn't start with a number is a comment (this one is)
-        0.123;0.001
+
     */
 }
 
@@ -169,6 +130,7 @@ class ReplayModulePatch
     {
         var add = script.gameObject.AddComponent<CheckpointAddon>();
         add.savedSceneTime = Time.timeSinceLevelLoadAsDouble;
+        add.lastClick = ReplayModule.lastClick;
         // doing this so i dont need an extra il for dup cuz i hate transpiler lol
         return script;
     }
@@ -190,7 +152,8 @@ class ReplayModulePatch
     [HarmonyPatch("Awake")]
     public static void AwakePostfix(PlayerScript __instance)
     {
-        click = false;
+        ReplayModule.shouldClick = false;
+        ReplayModule.lastClick = false;
         ReplayModule.lastKframe = -1;
         ReplayModule.lastOffset = 0;
         if (PauseMenuManager.inPracticeMode)
@@ -200,18 +163,18 @@ class ReplayModulePatch
             {
                 var a = recentCheckpoint.GetComponent<CheckpointAddon>();
                 ReplayModule.lastOffset = a.savedSceneTime;
+                ReplayModule.lastClick = a.lastClick;
             }
         }
     }
 
-    private static bool click;
 
 
     [HarmonyPrefix]
     [HarmonyPatch("Update")]
     public static void UpdatePrefix(PlayerScriptEditor __instance)
     {
-        if(ReplayModule.Mode == ReplayMode.Replaying)
+        if(Extensions.Enabled<ReplayModule>() && ReplayModule.Mode == ReplayMode.Replaying)
         {
             var i = ReplayModule.testReplay.FindLastIndex((l) => l.time <= ReplayModule.CurrentTime);
             if (i >= 0)
@@ -232,7 +195,7 @@ class ReplayModulePatch
                     __instance.jumpInputPressed = shouldClick;
                     
                 }
-                click = shouldClick;
+                ReplayModule.shouldClick = shouldClick;
                 //_3DashUtils.Log.LogMessage($"ct: {ReplayModule.CurrentTime}");
                 //_3DashUtils.Log.LogMessage($"t: {currentKframe.time}, c: {currentKframe.click}");
             }
@@ -241,13 +204,7 @@ class ReplayModulePatch
 
     public static bool InputCheck()
     {
-        var i = ReplayModule.lastKframe;
-        if (ReplayModule.lastKframe >= 0)
-        {
-            var currentKframe = ReplayModule.testReplay[i];
-            return currentKframe.click;
-        }
-        return false;
+        return Extensions.Enabled<ReplayModule>() && ReplayModule.shouldClick;
     }
 
     [HarmonyTranspiler]
@@ -269,22 +226,21 @@ class ReplayModulePatch
     [HarmonyPatch("Update")]
     public static void UpdatePostfix(PlayerScriptEditor __instance)
     {
-
-        var replayMod = Extensions.GetModule<ReplayModule>();
-        if (ReplayModule.Mode == ReplayMode.Recording)
+        if (Extensions.Enabled<ReplayModule>() && ReplayModule.Mode == ReplayMode.Recording)
         {
             var player = GameObject.FindObjectOfType<PlayerScript>();
             if (player == null) return;
             var click = player.jumpInput;
-            if (replayMod.lastClick != click)
+            if (ReplayModule.lastClick != click)
             {
                 _3DashUtils.Log.LogMessage("adding click " + click + " at " + ReplayModule.CurrentTime);
                 ReplayModule.testReplay.Add(ReplayModule.CurrentTime, click);
             }
-            replayMod.lastClick = click;
+            ReplayModule.lastClick = click;
         }
     }
 }
+
 [HarmonyPatch(typeof(PlayerScriptEditor))]
 class ReplayModulePatch2
 {
@@ -324,6 +280,7 @@ class ReplayModulePatch2
 class CheckpointAddon : MonoBehaviour
 {
     public double savedSceneTime;
+    public bool lastClick;
 }
 
 public class ClickReplay : List<Keyframe>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using _3DashUtils.Mods.Hidden;
 using _3DashUtils.ModuleSystem;
 using BepInEx;
 using BepInEx.Configuration;
@@ -23,19 +24,13 @@ public class _3DashUtils : BaseUnityPlugin
 
 	public const string VERSION = "1.0.0";
 
-	internal static ManualLogSource Log;
-
-	internal readonly Harmony Harmony;
-
-	internal readonly Assembly Assembly;
-
 	public static ConfigFile ConfigFile = new ConfigFile(Path.Combine(Paths.ConfigPath, MODNAME + ".cfg"), saveOnInit: true);
 
-
-
-    private static GameObject Load;
+	internal static ManualLogSource Log;
+	internal Harmony Harmony;
     internal static Material CustomMaterial;
     internal static Material RedMaterial;
+    internal AssetBundle bundle;
 
     /// <summary>
     /// A list of all loaded <see cref="IMenuModule">modules</see>.
@@ -63,20 +58,12 @@ public class _3DashUtils : BaseUnityPlugin
         }
     }
 
-	public _3DashUtils()
+    private void Awake()
     {
         Log = base.Logger;
         Log.LogDebug("Plugin Constructing...");
         Harmony = new Harmony(GUID);
-		Assembly = Assembly.GetExecutingAssembly();
-		Path.GetDirectoryName(Assembly.Location);
-	}
-
-	public void Start()
-    {
-		Log.LogDebug("Plugin Starting...");
-
-        var bundle = AssetBundle.LoadFromMemory(Properties.Resources.shaderbundle);
+        bundle = AssetBundle.LoadFromMemory(Properties.Resources.shaderbundle);
         var niceMaterial = bundle.LoadAsset<Material>("assets/vcolmat.mat");
         niceMaterial.SetFloat("_Alpha", .69f); // maybe expose this as config later?
         var redMat = new Material(niceMaterial);
@@ -91,28 +78,84 @@ public class _3DashUtils : BaseUnityPlugin
             Log.LogDebug("	Adding Module " + mod.Name);
             var modObj = (IMenuModule)Activator.CreateInstance(mod);
             moduleList.Add(modObj);
-            
-            // These don't need to be categorized
-            if (modObj.CategoryName == "Hidden") continue; 
-			
-            if (moduleCategories.TryGetValue(modObj.CategoryName, out var list))
-			{
-				list.modules.Add(modObj);
-			}
-			else
-			{
-				var lst = new List<IMenuModule>(new IMenuModule[] { modObj });
-				var mcat = new ModuleCategory(lst, i);
-				mcat.windowRect = new Rect(20 + (i*200), 20, 100, 100);
-                moduleCategories.Add(modObj.CategoryName,mcat);
-                i++;
-			}
-        }
-        Load = new GameObject();
-		Load.name = "3DashUtils Manager";
-		Load.AddComponent<_3DashUtilsScript>();
-		DontDestroyOnLoad(Load);
-		Harmony.PatchAll(Assembly);
 
-	}
+            // These don't need to be categorized
+            if (modObj.CategoryName == "Hidden") continue;
+
+            if (moduleCategories.TryGetValue(modObj.CategoryName, out var list))
+            {
+                list.modules.Add(modObj);
+            }
+            else
+            {
+                var lst = new List<IMenuModule>(new IMenuModule[] { modObj });
+                var mcat = new ModuleCategory(lst, i);
+                mcat.windowRect = new Rect(20 + (i * 200), 20, 100, 100);
+                moduleCategories.Add(modObj.CategoryName, mcat);
+                i++;
+            }
+        }
+        Harmony.PatchAll();
+        _3DashUtils.moduleList.Do((p) => p.Awake());
+    }
+
+	public void Start()
+    {
+        _3DashUtils.moduleList.Do((p) => p.Start());
+    }
+
+    private string lastTooltipContent;
+    private float lastTooltipTime;
+    
+
+    public void Update()
+    {
+        _3DashUtils.moduleList.Do((p) => p.Update());
+    }
+
+    public void OnGUI()
+    {
+        if (MenuHandler.menuOpen.Value)
+        {
+            foreach (var key in _3DashUtils.moduleCategories.Keys)
+            {
+                if (key == "Hidden")
+                {
+                    continue;
+                }
+
+                var cat = _3DashUtils.moduleCategories[key];
+
+                cat.windowRect = GUILayout.Window(cat.internalWindowID, cat.windowRect, (windowID) =>
+                {
+                    cat.modules.Sort((mod1, mod2) => Math.Sign(mod2.Priority - mod1.Priority));
+                    foreach (var gui in cat.modules)
+                    {
+                        gui.OnGUI();
+                    }
+                    if (!string.IsNullOrWhiteSpace(GUI.tooltip))
+                    {
+                        lastTooltipContent = GUI.tooltip;
+                        lastTooltipTime = Time.realtimeSinceStartup;
+                    }
+                    GUI.DragWindow();
+                }, key);
+            }
+
+            if (!string.IsNullOrWhiteSpace(lastTooltipContent) && Time.realtimeSinceStartup - lastTooltipTime < 0.5)
+            {
+                var content = new GUIContent(lastTooltipContent);
+                var size = GUIStyles.Tooltip.CalcSize(content);
+                var rect = new Rect(20, Screen.height - 60 - size.y, size.x + 20, size.y + 2);
+                GUI.Box(rect, content, GUIStyles.Tooltip);
+            }
+        }
+        _3DashUtils.moduleList.Do((p) => p.OnUnityGUI());
+    }
+
+    void OnDestroy()
+    {
+        Harmony.UnpatchSelf();
+        bundle.Unload(true);
+    }
 }
