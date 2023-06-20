@@ -24,10 +24,11 @@ class TextInputConfig<T> : ConfigOptionBase<T>
 
     public override void OnGUI()
     {
-        lastText = GUILayout.TextField(lastText);
-        if (textTryParser(lastText, out var i))
+        var newText = GUILayout.TextField(lastText);
+        if (textTryParser(newText, out var i))
         {
             Value = i;
+            lastText = newText;
         }
     }
 }

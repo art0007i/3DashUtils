@@ -2,6 +2,7 @@
 using _3DashUtils.ModuleSystem.Config;
 using BepInEx.Configuration;
 using HarmonyLib;
+using System.Net.Configuration;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

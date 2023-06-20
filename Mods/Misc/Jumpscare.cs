@@ -48,8 +48,7 @@ public class Jumpscare : ToggleModule
 
     public async Task LoadJumpscareAssets()
     {
-        var path = Path.Combine(Path.GetDirectoryName(this.GetType().Assembly.Location), "Resources");
-        _3DashUtils.Log.LogMessage(path);
+        var path = Path.Combine(Extensions.GetPluginDataPath(), "Resources");
 
         var req = UnityWebRequestMultimedia.GetAudioClip("file:///" + Path.Combine(path, "jumpscare.mp3"), AudioType.MPEG);
         var reqask = req.SendWebRequest();
@@ -102,7 +101,7 @@ public class JumpscareScript : MonoBehaviour
         rect.anchorMax = new Vector2(0.5f, 0.5f);
         if(Jumpscare.jumpscareAudio != null)
         {
-            GameObject gameObject = new GameObject("One shot audio");
+            GameObject gameObject = new GameObject("jumpscare audio");
             AudioSource audioSource = (AudioSource)gameObject.AddComponent(typeof(AudioSource));
             audioSource.clip = Jumpscare.jumpscareAudio;
             audioSource.spatialBlend = 0f;
