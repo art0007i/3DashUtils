@@ -1,9 +1,6 @@
 ﻿using _3DashUtils.ModuleSystem;
-using BepInEx.Configuration;
 using HarmonyLib;
-using System.Data.SqlTypes;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace _3DashUtils.Mods.Player;
 

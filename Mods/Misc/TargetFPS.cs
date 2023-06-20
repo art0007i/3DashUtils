@@ -1,6 +1,5 @@
 ﻿using _3DashUtils.ModuleSystem;
 using _3DashUtils.ModuleSystem.Config;
-using BepInEx.Configuration;
 using UnityEngine;
 
 namespace _3DashUtils.Mods.Misc;

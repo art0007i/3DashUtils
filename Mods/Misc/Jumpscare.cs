@@ -2,7 +2,6 @@
 using _3DashUtils.Mods.Player;
 using _3DashUtils.ModuleSystem;
 using _3DashUtils.ModuleSystem.Config;
-using BepInEx.Configuration;
 using HarmonyLib;
 using System.IO;
 using System.Threading.Tasks;

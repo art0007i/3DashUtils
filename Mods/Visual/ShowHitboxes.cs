@@ -1,10 +1,7 @@
-﻿using BepInEx.Configuration;
-using HarmonyLib;
+﻿using HarmonyLib;
 using System.Linq;
 using Gizmos = Popcron.Gizmos;
 using UnityEngine;
-using Popcron;
-using UnityEngine.PlayerLoop;
 using _3DashUtils.ModuleSystem;
 
 namespace _3DashUtils.Mods.Visual;

@@ -2,18 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Configuration;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
-using System.Threading.Tasks;
-using _3DashUtils.Mods.Player;
 using _3DashUtils.ModuleSystem;
-using _3DashUtils.ModuleSystem.Config;
 using BepInEx.Configuration;
 using HarmonyLib;
 using UnityEngine;
-using static UnityEngine.Networking.UnityWebRequest;
 
 namespace _3DashUtils.Mods.Replays;
 

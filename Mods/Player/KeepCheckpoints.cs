@@ -1,5 +1,4 @@
 ﻿using _3DashUtils.ModuleSystem;
-using BepInEx.Configuration;
 using HarmonyLib;
 
 namespace _3DashUtils.Mods.Player;
