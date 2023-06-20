@@ -10,7 +10,7 @@ public class FPSLabel : ModuleBase
 
     public override void OnGUI()
     {
-        float f = 1f / Time.deltaTime;
+        float f = 1f / Time.unscaledDeltaTime;
         GUILayout.Label($"FPS: {Mathf.Round(f)}");
     }
 }
