@@ -86,6 +86,7 @@
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(CopyToMods)'=='true'">
 	<MakeDir Directories="$(PluginPath)" Condition="!Exists('$(PluginPath)')" />
 	<MakeDir Directories="$(PluginPath)/Resources/" Condition="!Exists('$(PluginPath)/Resources/')" />
+	<MakeDir Directories="$(PluginPath)/Replays/" Condition="!Exists('$(PluginPath)/Replays/')" />
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(PluginPath)" />
     <Copy SourceFiles="@(PluginResources)" DestinationFolder="$(PluginPath)/Resources/" />
     <Message Text="Copied $(TargetFileName) to $(PluginPath)" Importance="high" />
