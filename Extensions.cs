@@ -2,6 +2,7 @@
 using _3DashUtils.ModuleSystem.Config;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -150,5 +151,10 @@ public static class Extensions
             }
         }
         return output;
+    }
+
+    public static string GetPluginDataPath()
+    {
+        return Path.GetDirectoryName(typeof(_3DashUtils).Assembly.Location);
     }
 }
