@@ -19,6 +19,10 @@
         public abstract void Update();
         /// <summary>
         /// Called whenever the equivalent unity function gets called.
+        /// </summary>
+        public abstract void FixedUpdate();
+        /// <summary>
+        /// Called whenever the equivalent unity function gets called.
         /// <br/>
         /// This function will be ran inside of a window along other modules with the same <see cref="CategoryName"/>.
         /// </summary>
