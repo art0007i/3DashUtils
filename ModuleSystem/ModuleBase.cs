@@ -41,5 +41,8 @@ public abstract class ModuleBase : IMenuModule
 
     public virtual void Update()
     {
-    }   
+    }
+    public virtual void FixedUpdate()
+    {
+    }
 }

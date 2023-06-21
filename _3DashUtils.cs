@@ -106,11 +106,16 @@ public class _3DashUtils : BaseUnityPlugin
 
     private string lastTooltipContent;
     private float lastTooltipTime;
-    
+
 
     public void Update()
     {
         _3DashUtils.moduleList.Do((p) => p.Update());
+    }
+
+    public void FixedUpdate()
+    {
+        _3DashUtils.moduleList.Do((p) => p.FixedUpdate());
     }
 
     public void OnGUI()
