@@ -152,12 +152,7 @@ public static class Extensions
 
     public static string GetPluginDataPath()
     {
-#if DEBUG
-        // horrible but the other way doesnt work with script engine
-        return Path.GetFullPath(Path.GetDirectoryName(typeof(PlayerScript).Assembly.Location) + "/../../BepInEx/scripts");
-#else
         return Path.GetDirectoryName(typeof(_3DashUtils).Assembly.Location);
-#endif
     }
     /// <summary>
     /// Finds a GameObject with name <paramref name="name"/> and gets the component of type <typeparamref name="T"/> from it.

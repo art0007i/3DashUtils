@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
+using _3DashUtils.Mods.Player;
 using _3DashUtils.ModuleSystem;
 using BepInEx.Configuration;
 using HarmonyLib;
@@ -74,7 +75,7 @@ public class ReplayModule : ToggleModule
         _3DashUtils.Log.LogMessage("removeing everything after " + CurrentTime);
         for (int i = testReplay.Count - 1; i >= 0; i--)
         {
-            if(i >= CurrentTime)
+            if (testReplay[i].time >= CurrentTime)
             {
                 testReplay.RemoveAt(i);
             }
@@ -119,18 +120,19 @@ class Fuckpatch
 class ReplayModulePatch
 {
     public static MethodInfo lookFor = AccessTools.FirstMethod(
-        typeof(GameObject), 
-        (m) => m.Name == "GetComponent" && 
+        typeof(GameObject),
+        (m) => m.Name == "GetComponent" &&
         m.IsGenericMethod).MakeGenericMethod(new Type[] {
             typeof(CheckpointScript)
         });
 
     public static MethodInfo injectFunc = typeof(ReplayModulePatch).GetMethod("Injection");
-    public static CheckpointScript Injection(CheckpointScript script)
+    public static CheckpointScript Injection(CheckpointScript script, PlayerScript p)
     {
         var add = script.gameObject.AddComponent<CheckpointAddon>();
-        add.savedSceneTime = Time.timeSinceLevelLoadAsDouble;
-        add.lastClick = ReplayModule.lastClick;
+        add.SaveCP(p);
+
+        _3DashUtils.Log.LogMessage("adding cp " + add.savedSceneTime);
         // doing this so i dont need an extra il for dup cuz i hate transpiler lol
         return script;
     }
@@ -142,8 +144,9 @@ class ReplayModulePatch
         foreach (var code in codes)
         {
             yield return code;
-            if(code.operand is MethodInfo mi && mi == lookFor)
+            if (code.operand is MethodInfo mi && mi == lookFor)
             {
+                yield return new(OpCodes.Ldarg_0);
                 yield return new(OpCodes.Call, injectFunc);
             }
         }
@@ -162,8 +165,8 @@ class ReplayModulePatch
             if (recentCheckpoint)
             {
                 var a = recentCheckpoint.GetComponent<CheckpointAddon>();
-                ReplayModule.lastOffset = a.savedSceneTime;
-                ReplayModule.lastClick = a.lastClick;
+                _3DashUtils.Log.LogMessage("loading cp " + a.savedSceneTime);
+                a.LoadCP(__instance);
             }
         }
     }
@@ -174,7 +177,7 @@ class ReplayModulePatch
     [HarmonyPatch("Update")]
     public static void UpdatePrefix(PlayerScriptEditor __instance)
     {
-        if(Extensions.Enabled<ReplayModule>() && ReplayModule.Mode == ReplayMode.Replaying)
+        if (Extensions.Enabled<ReplayModule>() && ReplayModule.Mode == ReplayMode.Replaying)
         {
             var i = ReplayModule.testReplay.FindLastIndex((l) => l.time <= ReplayModule.CurrentTime);
             if (i >= 0)
@@ -183,7 +186,7 @@ class ReplayModulePatch
                 var shouldClick = currentKframe.click;
                 var last = ReplayModule.lastKframe;
 
-                if (last != i)
+                if (last != i && last >= 0)
                 {
                     var count = i - last;
                     // check if we skipped any click frames. if so click them
@@ -193,7 +196,7 @@ class ReplayModulePatch
                     }
                     ReplayModule.lastKframe = i;
                     __instance.jumpInputPressed = shouldClick;
-                    
+
                 }
                 ReplayModule.shouldClick = shouldClick;
                 //_3DashUtils.Log.LogMessage($"ct: {ReplayModule.CurrentTime}");
@@ -275,12 +278,71 @@ class ReplayModulePatch2
     {
         ReplayModulePatch.UpdatePrefix(__instance);
     }
-} 
+}
 
-class CheckpointAddon : MonoBehaviour
+public class CheckpointAddon : MonoBehaviour
 {
+    public static FieldInfo[] props;
     public double savedSceneTime;
     public bool lastClick;
+
+    // PlayerScript
+    // not necessary..
+    public bool noDeath;
+    public bool noCollision;
+
+    public bool jumpInput;
+    public bool jumpInputPressed;
+    public bool canHitOrb;
+    public bool canHedron;
+    // not necessary
+    //public bool dead;
+    public bool onGround;
+    // not necessary (inherits from PathFollower, which is saved)
+    //public float speed;
+    public float gravityMultiplier;
+
+    //PlayerScriptEditor
+    public bool jumpInputWasPressed;
+
+    public void SaveCP(PlayerScript p)
+    {
+        savedSceneTime = ReplayModule.CurrentTime;
+        lastClick = ReplayModule.lastClick;
+
+        noDeath = p.noDeath;
+        noCollision = p.noCollision;
+        jumpInput = p.jumpInput;
+        jumpInputPressed = p.jumpInputPressed;
+        canHitOrb = p.canHitOrb;
+        canHedron = p.canHedron;
+        onGround = p.onGround;
+        gravityMultiplier = p.gravityMultiplier;
+        if (p is PlayerScriptEditor e)
+        {
+            jumpInputWasPressed = e.jumpInputWasPressed;
+        }
+    }
+    public void LoadCP(PlayerScript p)
+    {
+        ReplayModule.lastOffset = savedSceneTime;
+        ReplayModule.lastClick = lastClick;
+        if (Extensions.Enabled<CheckpointFix>() || Extensions.Enabled<ReplayModule>())
+        {
+            p.noDeath = noDeath;
+            p.noCollision = noCollision;
+            p.jumpInput = jumpInput;
+            p.jumpInputPressed = jumpInputPressed;
+            p.canHitOrb = canHitOrb;
+            p.canHedron = canHedron;
+            p.onGround = onGround;
+            p.gravityMultiplier = gravityMultiplier;
+            if (p is PlayerScriptEditor e)
+            {
+                e.jumpInputWasPressed = jumpInputWasPressed;
+            }
+        }
+    }
 }
 
 public class ClickReplay : List<Keyframe>
@@ -300,7 +362,7 @@ public struct Keyframe : IComparable<Keyframe>
     }
 
     public int CompareTo(Keyframe other) => Math.Sign(time - other.time);
-    
+
 }
 
 public static class ReplayConverter
@@ -319,24 +381,24 @@ public static class ReplayConverter
     public static ClickReplay StringToReplay(string replay)
     {
         ClickReplay result = new();
-        var lines = replay.Split(new char[] {'\n', '\r'});
+        var lines = replay.Split(new char[] { '\n', '\r' });
         foreach (var line in lines)
         {
             if (line.Length < 1) continue;
             var click = false;
-            switch (line[0]) 
-            { 
+            switch (line[0])
+            {
                 case '+':
                     click = true;
                     goto case '-';
                 case '-':
-                    if(double.TryParse(line.Substring(1), out var time))
+                    if (double.TryParse(line.Substring(1), out var time))
                     {
                         result.Add(time, click);
                     }
                     break;
 
-                default: 
+                default:
                     continue;
             }
         }
