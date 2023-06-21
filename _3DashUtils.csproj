@@ -10,7 +10,7 @@
     <CopyToMods Condition="'$(CopyToMods)'==''">true</CopyToMods>
     <GamePath>$(MSBuildThisFileDirectory)3Dash</GamePath>
     <GamePath Condition="Exists('E:\nothing. trust me\3Dash Windows v1.2.1\')">E:\nothing. trust me\3Dash Windows v1.2.1\</GamePath>
-	<GamePath Condition="Exists('C:\Users\Andrew\Desktop\3Dash Windows v1.2.1\')">C:\Users\Andrew\Desktop\3Dash Windows v1.2.1\</GamePath>
+	  <GamePath Condition="Exists('C:\Users\Andrew\Desktop\3Dash Windows v1.2.1\')">C:\Users\Andrew\Desktop\3Dash Windows v1.2.1\</GamePath>
 	<PluginPath>$(GamePath)BepInEx/plugins/$(AssemblyName)/</PluginPath>
   </PropertyGroup>
   <PropertyGroup />
@@ -86,7 +86,6 @@
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(CopyToMods)'=='true'">
 	<MakeDir Directories="$(PluginPath)" Condition="!Exists('$(PluginPath)')" />
 	<MakeDir Directories="$(PluginPath)/Resources/" Condition="!Exists('$(PluginPath)/Resources/')" />
-	<MakeDir Directories="$(PluginPath)/Replays/" Condition="!Exists('$(PluginPath)/Replays/')" />
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(PluginPath)" />
     <Copy SourceFiles="@(PluginResources)" DestinationFolder="$(PluginPath)/Resources/" />
     <Message Text="Copied $(TargetFileName) to $(PluginPath)" Importance="high" />

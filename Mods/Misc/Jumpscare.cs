@@ -2,7 +2,6 @@
 using _3DashUtils.Mods.Player;
 using _3DashUtils.ModuleSystem;
 using _3DashUtils.ModuleSystem.Config;
-using BepInEx.Configuration;
 using HarmonyLib;
 using System.IO;
 using System.Threading.Tasks;
@@ -30,14 +29,9 @@ public class Jumpscare : ToggleModule
 
     public Jumpscare()
     {
-        chanceConfig = new TextInputConfig<double>(this, "Chance", 0.05, "The chance that a jumpscare will appear. 1 means always, 0 means never.", TryParseChance);
+        // inclusive bounds because why not let people make impossible jumpscare or always jumpscare
+        chanceConfig = new TextInputConfig<double>(this, "Chance", 0.05, "The chance that a jumpscare will appear. 1 means always, 0 means never.", (v)=>v >= 0 && v <= 1);
     }
-
-    private bool TryParseChance(string text, out double value)
-    {
-        return double.TryParse(text, out value);
-    }
-
     public override void Awake()
     {
         base.Awake();
@@ -48,8 +42,7 @@ public class Jumpscare : ToggleModule
 
     public async Task LoadJumpscareAssets()
     {
-        var path = Path.Combine(Path.GetDirectoryName(this.GetType().Assembly.Location), "Resources");
-        _3DashUtils.Log.LogMessage(path);
+        var path = Path.Combine(Extensions.GetPluginDataPath(), "Resources");
 
         var req = UnityWebRequestMultimedia.GetAudioClip("file:///" + Path.Combine(path, "jumpscare.mp3"), AudioType.MPEG);
         var reqask = req.SendWebRequest();
@@ -102,7 +95,7 @@ public class JumpscareScript : MonoBehaviour
         rect.anchorMax = new Vector2(0.5f, 0.5f);
         if(Jumpscare.jumpscareAudio != null)
         {
-            GameObject gameObject = new GameObject("One shot audio");
+            GameObject gameObject = new GameObject("jumpscare audio");
             AudioSource audioSource = (AudioSource)gameObject.AddComponent(typeof(AudioSource));
             audioSource.clip = Jumpscare.jumpscareAudio;
             audioSource.spatialBlend = 0f;

@@ -1,5 +1,4 @@
 ﻿using _3DashUtils.ModuleSystem;
-using BepInEx.Configuration;
 using HarmonyLib;
 using UnityEngine;
 

@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace _3DashUtils.ModuleSystem.Config;
@@ -18,8 +13,6 @@ public class SliderConfig<T> : ConfigOptionBase<T>
     /// <param name="decimalPlaces">This is used to render the current value of the slider.</param>
     public SliderConfig(IMenuModule module, string name, T defaultValue, string description, T min, T max, byte decimalPlaces = 2) : base(module, name, defaultValue, description)
     {
-        _3DashUtils.Log.LogMessage("adding slide rof type " + typeof(T).Name);
-
         float test = ToFloat(defaultValue);
         T test2 = FromFloat(test);
 

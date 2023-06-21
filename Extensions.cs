@@ -1,12 +1,10 @@
 ﻿using _3DashUtils.ModuleSystem;
 using _3DashUtils.ModuleSystem.Config;
 using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace _3DashUtils;
@@ -150,5 +148,37 @@ public static class Extensions
             }
         }
         return output;
+    }
+
+    public static string GetPluginDataPath()
+    {
+        return Path.GetDirectoryName(typeof(_3DashUtils).Assembly.Location);
+    }
+    /// <summary>
+    /// Finds a GameObject with name <paramref name="name"/> and gets the component of type <typeparamref name="T"/> from it.
+    /// </summary>
+    public static T Find<T>(string name) where T : Component
+    {
+        return GameObject.Find(name).GetComponent<T>();
+    }
+    /// <summary>
+    /// Finds a GameObject with name same as class <typeparamref name="T"/> and gets the component of type <typeparamref name="T"/> from it.
+    /// </summary>
+    public static T FindSameName<T>() where T : Component
+    {
+        var name = typeof(T).Name;
+        return GameObject.Find(name).GetComponent<T>();
+    }
+    /// <summary>
+    /// Finds a GameObject with tag <paramref name="tag"/> and gets the component of type <typeparamref name="T"/> from it.
+    /// </summary>
+    public static T FindByTag<T>(string tag) where T : Component
+    {
+        return GameObject.FindGameObjectWithTag(tag).GetComponent<T>();
+    }
+
+    public static T CastDelegate<T>(Delegate d) where T : Delegate
+    {
+        return (T)d.Method.CreateDelegate(typeof(T));
     }
 }

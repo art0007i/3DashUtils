@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace _3DashUtils.ModuleSystem
+﻿namespace _3DashUtils.ModuleSystem
 {
     /// <summary>
     /// The interface class for modules. Usually you want to extend the <see cref="ModuleBase"/> when making your own module.

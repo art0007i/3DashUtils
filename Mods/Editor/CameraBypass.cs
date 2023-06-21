@@ -1,7 +1,5 @@
 ﻿using _3DashUtils.ModuleSystem;
-using BepInEx.Configuration;
 using HarmonyLib;
-using UnityEngine;
 
 namespace _3DashUtils.Mods.Editor;
 
