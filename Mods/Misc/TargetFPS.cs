@@ -1,6 +1,7 @@
 ﻿using _3DashUtils.Mods.Player;
 using _3DashUtils.ModuleSystem;
 using _3DashUtils.ModuleSystem.Config;
+using System;
 using UnityEngine;
 
 namespace _3DashUtils.Mods.Misc;
@@ -31,7 +32,7 @@ public class TargetFPS : ToggleModule
     {
         var mult = LockDelta ? Time.timeScale : 1;
         Application.targetFrameRate = Enabled ? (int)(Value * mult) : -1;
-        var f = (int)(Value * mult);
+        var f = Math.Max((int)(Value * mult), 1);
         Time.captureFramerate = Enabled && LockDelta ? f : 0;
     }
 }
