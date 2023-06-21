@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
@@ -155,6 +156,7 @@ class ReplayModulePatch
     [HarmonyPatch("Awake")]
     public static void AwakePostfix(PlayerScript __instance)
     {
+        _3DashUtils.Log.LogMessage("death at " + ReplayModule.CurrentTime);
         ReplayModule.shouldClick = false;
         ReplayModule.lastClick = false;
         ReplayModule.lastKframe = -1;
@@ -305,6 +307,19 @@ public class CheckpointAddon : MonoBehaviour
     //PlayerScriptEditor
     public bool jumpInputWasPressed;
 
+    // prob excessive
+    public Vector3 gfx_localScale;
+    public Quaternion gfx_rotation;
+    public Vector3 rb_velocity;
+    public bool CubeCollider_enabled;
+    public bool isCube;
+    public bool isRocket;
+    public bool isWave;
+    public bool isHedron;
+    public bool isUfo;
+    public bool isSmall;
+
+
     public void SaveCP(PlayerScript p)
     {
         savedSceneTime = ReplayModule.CurrentTime;
@@ -318,6 +333,22 @@ public class CheckpointAddon : MonoBehaviour
         canHedron = p.canHedron;
         onGround = p.onGround;
         gravityMultiplier = p.gravityMultiplier;
+
+        // UPDATE
+        gfx_localScale = p.gfx.transform.localScale;
+
+        //FIXEDUPDATE
+        gfx_rotation = p.gfx.transform.localRotation;
+        rb_velocity = p.rb.velocity;
+        CubeCollider_enabled = p.CubeCollider.enabled;
+        isCube = p.isCube;
+        isRocket = p.isRocket;
+        isWave = p.isWave;
+        isHedron = p.isHedron;
+        isUfo = p.isUfo;
+        isSmall = p.isSmall;
+
+
         if (p is PlayerScriptEditor e)
         {
             jumpInputWasPressed = e.jumpInputWasPressed;
@@ -337,6 +368,21 @@ public class CheckpointAddon : MonoBehaviour
             p.canHedron = canHedron;
             p.onGround = onGround;
             p.gravityMultiplier = gravityMultiplier;
+
+            // UPDATE
+            p.gfx.transform.localScale = gfx_localScale;
+
+            //FIXEDUPDATE
+            p.gfx.transform.localRotation = gfx_rotation;
+            p.rb.velocity = rb_velocity;
+            p.CubeCollider.enabled = CubeCollider_enabled;
+            p.isCube = isCube;
+            p.isRocket = isRocket;
+            p.isWave = isWave;
+            p.isHedron = isHedron;
+            p.isUfo = isUfo;
+            p.isSmall = isSmall;
+
             if (p is PlayerScriptEditor e)
             {
                 e.jumpInputWasPressed = jumpInputWasPressed;
