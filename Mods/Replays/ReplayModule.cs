@@ -54,7 +54,7 @@ public class ReplayModule : ToggleModule
     }
 
     public override void OnGUI()
-    {
+        {
         base.OnGUI();
         //var w = GUILayoutUtility.GetLastRect().width /2;
         var SelectedButtonStyle = new GUIStyle(GUI.skin.button);
@@ -187,18 +187,17 @@ class ReplayModulePatch
                 var currentKframe = ReplayModule.testReplay[i];
                 var shouldClick = currentKframe.click;
                 var last = ReplayModule.lastKframe;
-
-                if (last != i && last >= 0)
+                if (last != i)
                 {
+                    last = last < 0 ? 0 : last;
                     var count = i - last;
                     // check if we skipped any click frames. if so click them
-                    if (count > 1 && ReplayModule.testReplay.GetRange(ReplayModule.lastKframe, count).Any((k) => k.click = true))
+                    if (count >= 1 && ReplayModule.testReplay.GetRange(last, count).Any((k) => k.click = true))
                     {
                         shouldClick = true;
                     }
                     ReplayModule.lastKframe = i;
                     __instance.jumpInputPressed = shouldClick;
-
                 }
                 ReplayModule.shouldClick = shouldClick;
                 //_3DashUtils.Log.LogMessage($"ct: {ReplayModule.CurrentTime}");
