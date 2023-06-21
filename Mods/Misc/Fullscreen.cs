@@ -15,7 +15,7 @@ public class Fullscreen : ToggleModule
 
     protected override bool Default => true;
 
-    public override string Description => "Toggles fullscreen mode.";
+    public override string Description => "Toggles fullscreen mode. Can always be toggled by Alt+Enter (default unity keybind).";
 
     public int ResolutionX => resolutionXconfig.Value;
     public ConfigOptionBase<int> resolutionXconfig;
@@ -38,6 +38,7 @@ public class Fullscreen : ToggleModule
     {
         base.OnToggle();
         Screen.fullScreen = Enabled;
+        Screen.SetResolution(Display.main.systemWidth, Display.main.systemHeight, Enabled);
     }
 
     public override void Update()
@@ -46,10 +47,12 @@ public class Fullscreen : ToggleModule
         Enabled = Screen.fullScreen;
         if (!Enabled)
         {
-            Resolution res = default;
-            res.width = ResolutionX;
-            res.height = ResolutionY;
-            Screen.SetResolution(res.width, res.height, false);
+            var w = ResolutionX;
+            var h = ResolutionY;
+            if (Screen.width != w || Screen.height != h)
+            {
+                Screen.SetResolution(w, h, Enabled);
+            }
         }
     }
 }
