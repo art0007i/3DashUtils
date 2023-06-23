@@ -91,7 +91,7 @@ public class _3DashUtils : BaseUnityPlugin
             {
                 var lst = new List<IMenuModule>(new IMenuModule[] { modObj });
                 var mcat = new ModuleCategory(lst, i);
-                mcat.windowRect = new Rect(20 + (i * 200), 20, 100, 100);
+                mcat.windowRect = new Rect(20 + (i * 200), 20, 180, 100);
                 moduleCategories.Add(modObj.CategoryName, mcat);
                 i++;
             }
