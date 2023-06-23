@@ -13,6 +13,9 @@ namespace _3DashUtils.ModuleSystem;
 /// </summary>
 public class KeyBindEditInfo
 {
+    /// <summary>
+    /// The key that is currently bound to the module. This field is currently unused lol
+    /// </summary>
     public KeyCode currentKey;
     /// <summary>
     /// Will be called whenever the user selects a new keybind. Does not get called if the user cancels editing.
@@ -28,9 +31,7 @@ public class KeyBindEditInfo
     /// Used internally to prevent you from activating the keybind right after setting it.
     /// </summary>
     public bool editingFinished;
-
-    public string conflictName;
-    public KeyCode conflict;
+    public KeyCode selectedKey;
 
     public KeyBindEditInfo(KeyCode currentKey, Action<KeyCode> callback, string keyBindName)
     {

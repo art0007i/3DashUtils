@@ -1,6 +1,7 @@
 ﻿using _3DashUtils.ModuleSystem;
 using _3DashUtils.ModuleSystem.Config;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -196,5 +197,13 @@ public static class Extensions
         Vector2 screnSize = new(Screen.width, Screen.height);
         var screenPos = (screnSize - size) / 2;
         return new Rect(screenPos, size);
+    }
+
+    /// <summary>
+    /// Returns an IEnumerable that contains KeyBindInfos of every single module.
+    /// </summary>
+    public static IEnumerable<KeyBindInfo> CollectKeyBindInfos()
+    {
+        return _3DashUtils.moduleList.OfType<IKeybindModule>().SelectMany((k) => k.KeyBinds);
     }
 }

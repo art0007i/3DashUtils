@@ -54,7 +54,7 @@ namespace _3DashUtils.ModuleSystem
                     var text = $"{ModuleName}: <b>" + KeyBind.ToString() + "</b>";
                     if(GUILayout.Button(new GUIContent(text, tip), GUILayout.ExpandWidth(true)))
                     {
-                        _3DashUtils.currentKeybindEditing = new(KeyBind, (key) => KeyBind = key, ModuleName);
+                        _3DashUtils.EditKey(new(KeyBind, (key) => KeyBind = key, ModuleName));
                     }
                 }
                 else
