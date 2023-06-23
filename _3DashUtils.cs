@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using _3DashUtils.Mods.Hidden;
 using _3DashUtils.ModuleSystem;
 using BepInEx;
@@ -10,6 +9,7 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace _3DashUtils;
 
@@ -45,6 +45,7 @@ public class _3DashUtils : BaseUnityPlugin
     /// </remarks>
 	public static Dictionary<string, ModuleCategory> moduleCategories = new();
 
+    public static KeyBindEditInfo currentKeybindEditing;
 	public class ModuleCategory
 	{
 		public List<IMenuModule> modules;
@@ -122,8 +123,56 @@ public class _3DashUtils : BaseUnityPlugin
         _3DashUtils.moduleList.Do((p) => p.LateUpdate());
     }
 
+    private Rect keyBindEditRect = Extensions.GetMiddleOfScreenRect(new(300,100));
+
     public void OnGUI()
     {
+        //GUI.enabled = false;
+        //GUI.Box(new(0, 0, Screen.width, Screen.height), "");
+        if (currentKeybindEditing is KeyBindEditInfo i)
+        {
+            keyBindEditRect = GUI.ModalWindow(-69420, keyBindEditRect, (windowID) =>
+            {
+                GUILayout.BeginVertical();
+                GUILayout.Label($"Enter a new key for <b>{i.keyBindName}</b>");
+                GUILayout.Label($"Press <b>ESC</b> to cancel.");
+                GUILayout.Label($"Press <b>Backspace</b> to reset the key.");
+                
+                // I don't know what the best option for these keys are but I think this is a good option.
+
+                // it makes sense, plus it's the pause keybind so we can use it.
+                if (Input.GetKeyDown(KeyCode.Escape))
+                {
+                    i.editingFinished = true;
+                }
+                // it makes sense, plus it's the suicide keybind so we can use it.
+                else if (Input.GetKeyDown(KeyCode.Backspace))
+                {
+                    i.callback(KeyCode.None);
+                    i.editingFinished = true;
+                }
+                else
+                {
+                    foreach (var item in Enum.GetValues(typeof(KeyCode)))
+                    {
+                        if(item is KeyCode k)
+                        {
+                            // you can't bind modules to the key you use to bind keybinds...
+                            // also you can't bind to mouse 0 or 1 cause you use that to drag the keybind window (and also mouse0 jumps in game)
+                            if(k != Extensions.keyBindEditKeyBind && k != KeyCode.Mouse0 && k != KeyCode.Mouse1 && Input.GetKeyDown(k))
+                            {
+                                i.callback(k);
+                                i.editingFinished = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                GUILayout.EndVertical();
+                GUI.DragWindow();
+            }, "Editing Keybind");
+            GUI.enabled = false;
+        }
         if (MenuHandler.menuOpen.Value)
         {
             foreach (var key in _3DashUtils.moduleCategories.Keys)
@@ -137,6 +186,7 @@ public class _3DashUtils : BaseUnityPlugin
 
                 cat.windowRect = GUILayout.Window(cat.internalWindowID, cat.windowRect, (windowID) =>
                 {
+                    if(currentKeybindEditing is KeyBindEditInfo) GUI.enabled = false;
                     cat.modules.Sort((mod1, mod2) => Math.Sign(mod2.Priority - mod1.Priority));
                     foreach (var gui in cat.modules)
                     {
@@ -159,6 +209,7 @@ public class _3DashUtils : BaseUnityPlugin
                 GUI.Box(rect, content, GUIStyles.Tooltip);
             }
         }
+        GUI.enabled = true;
         _3DashUtils.moduleList.Do((p) => p.OnUnityGUI());
     }
 

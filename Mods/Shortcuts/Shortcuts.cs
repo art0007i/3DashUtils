@@ -4,36 +4,67 @@ using UnityEngine;
 using _3DashUtils.ModuleSystem;
 using BepInEx.Configuration;
 using HarmonyLib;
+using System;
+using UnityEngine.Rendering;
 
 namespace _3DashUtils.Mods.Shortcuts;
 
-public class Shortcuts : ModuleBase
+public class Shortcuts : ModuleBase, IKeybindModule
 {
     public override string CategoryName => "Shortcuts";
+    public List<KeyBindInfo> KeyBinds { get; private set; } = new();
 
-    private Dictionary<string, string> shortcuts = new() {
-        {
-            "Main Menu", "Menu"
-        },
-        {
-            "Level Editor", "Save Select"
-        },
-        {
-            "Online Levels", "Online Levels Hub"
-        },
-    };
+    private List<Shortcut> shortcuts;
 
-    private bool waitingForSceneChange;
+    private bool waitingForSceneChange = false;
 
-    private List<ConfigEntry<KeyCode>> keyBinds = new();
+    private struct Shortcut
+    {
+        public string Name;
+        public string Description;
+        public KeyBindInfo KeyBind;
+
+        public Shortcut(string name, string description, KeyBindInfo keyBind)
+        {
+            Name = name;
+            Description = description;
+            KeyBind = keyBind;
+        }
+    }
 
     public Shortcuts()
     {
-        keyBinds.Add(_3DashUtils.ConfigFile.Bind("Keybinds", "MainMenuShortcut", KeyCode.None, "Keybind for loading the main menu instantly."));
-        keyBinds.Add(_3DashUtils.ConfigFile.Bind("Keybinds", "LevelEditorShortcut", KeyCode.None, "Keybind for loading the level editor instantly."));
-        keyBinds.Add(_3DashUtils.ConfigFile.Bind("Keybinds", "OnlineLevelsShortcut", KeyCode.None, "Keybind for loading the online levels hub instantly."));
-        keyBinds.Add(_3DashUtils.ConfigFile.Bind("Keybinds", "OfflineLevelsShortcut", KeyCode.None, "Keybind for loading the offline levels page instantly."));
-        keyBinds.Add(_3DashUtils.ConfigFile.Bind("Keybinds", "QuitGameShortcut", KeyCode.None, "Keybind for quitting the game instantly."));
+        shortcuts = new() {
+            new("Main Menu", "Loads the main menu instantly.",
+                new("MainMenuShortcut",
+                ()=>SceneManager.LoadScene("Menu"),
+                "Keybind for loading the main menu instantly.")
+            ),
+            new("Level Editor", "Loads the level editor instantly.",
+                new("LevelEditorShortcut",
+                ()=>SceneManager.LoadScene("Save Select"),
+                "Keybind for loading the level editor instantly.")
+            ),
+            new("Online Levels", "Loads the online levels page instantly.",
+                new("OnlineLevelsShortcut", 
+                ()=>SceneManager.LoadScene("Online Levels Hub"), 
+                "Keybind for loading the online levels page instantly.")
+            ),
+            new("Offline Levels", "Loads the offline levels page instantly.",
+                new("OfflineLevelsShortcut",
+                ()=>{
+                    waitingForSceneChange = true;
+                    SceneManager.LoadScene("Menu");
+                },
+                "Keybind for loading the offline levels page instantly.")
+            ),
+            new("<color=orange>Quit Game</color>", "Loads the offline levels page instantly.",
+                new("QuitGameShortcut",
+                Application.Quit, 
+                "Keybind for quitting the game instantly.")
+            ),
+        };
+        shortcuts.Do((sh) => KeyBinds.Add(sh.KeyBind));
     }
 
     public override void Awake()
@@ -44,7 +75,7 @@ public class Shortcuts : ModuleBase
             waitingForSceneChange = false;
             if (newScene.name == "Menu")
             {
-                var menuManager = Object.FindObjectOfType<MenuButtonScript>();
+                var menuManager = UnityEngine.Object.FindObjectOfType<MenuButtonScript>();
                 menuManager.panner.anchoredPosition = Utils.ChangeX(menuManager.pannerTransformGoal, 0f - menuManager.movementDistance);
                 menuManager.pannerTransformGoal = Utils.ChangeX(menuManager.pannerTransformGoal, 0f - menuManager.movementDistance);
             }
@@ -54,36 +85,44 @@ public class Shortcuts : ModuleBase
     public static string levelIdText;
     public static bool dontAutoLoad;
 
-    public override void OnGUI()
+    private void KeybindButton(ref int i)
     {
-        foreach(var shortcut in shortcuts)
+        var shortcut = shortcuts[i];
+        var keys = Extensions.EditingKeybinds();
+        var buttonLabel = shortcut.Name + (keys ? $": <b>{shortcut.KeyBind.KeyBind}</b>" : "");
+        var content = new GUIContent(buttonLabel, shortcut.Description);
+        if (GUILayout.Button(content))
         {
-            if(GUILayout.Button(shortcut.Key))
+            if (keys)
             {
-                SceneManager.LoadScene(shortcut.Value);
+                _3DashUtils.currentKeybindEditing = new(shortcut.KeyBind.KeyBind, (key) => shortcut.KeyBind.KeyBind = key, shortcut.Name + " Shortcut");
+            }
+            else
+            {
+                shortcut.KeyBind.KeyCallback();
             }
         }
+        i++;
+    }
 
-        if(GUILayout.Button("Offline Levels"))
-        {
-            waitingForSceneChange = true;
-            SceneManager.LoadScene("Menu");
-        }
+    public override void OnGUI()
+    {
+        var i = 0;
+        KeybindButton(ref i);
+        KeybindButton(ref i);
+        KeybindButton(ref i);
+        KeybindButton(ref i);
 
         GUILayout.BeginHorizontal();
         levelIdText = GUILayout.TextArea(levelIdText, GUILayout.Width(50));
-        if(GUILayout.Button("Open Level ID", GUILayout.ExpandWidth(true)))
+        if (GUILayout.Button("Open Level ID", GUILayout.ExpandWidth(true)))
         {
             dontAutoLoad = true;
             SceneManager.LoadScene("Online Levels Hub");
         }
         GUILayout.EndHorizontal();
 
-        var quitText = "Quit Game";
-        if (GUILayout.Button($"<color=orange>{quitText}</color>"))
-        {
-            Application.Quit();
-        }
+        KeybindButton(ref i);
     }
 }
 
@@ -99,7 +138,6 @@ class ShortcutsPatch
             __instance.LoadLevel(levelId);
         }
 
-        // if autoload is true, return false (skips func which loads online levels)
         return !d;
     }
 }
