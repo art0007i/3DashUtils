@@ -95,7 +95,7 @@ public class Shortcuts : ModuleBase, IKeybindModule
         {
             if (keys)
             {
-                _3DashUtils.EditKey(new(shortcut.KeyBind.KeyBind, (key) => shortcut.KeyBind.KeyBind = key, shortcut.Name + " Shortcut"));
+                _3DashUtils.EditKey(new(KeyCode.None, (key) => shortcut.KeyBind.KeyBind = key, shortcut.Name + " Shortcut"));
             }
             else
             {

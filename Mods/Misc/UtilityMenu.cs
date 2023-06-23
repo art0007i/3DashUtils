@@ -6,30 +6,26 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace _3DashUtils.Mods.Hidden;
+namespace _3DashUtils.Mods.Misc;
 
-public class MenuHandler : ModuleBase, IKeybindModule
+public class UtilityMenu : ToggleModule, IKeybindModule
 {
-    public static ConfigEntry<bool> menuOpen = _3DashUtils.ConfigFile.Bind("Main", "MenuOpen", true);
-    public static KeyBindInfo menuOpenKeyBind;
-    public override string CategoryName => "Hidden";
+    public override string CategoryName => "Misc";
 
-    public List<KeyBindInfo> KeyBinds { get; private set; } = new();
+    protected override bool Default => true;
 
-    public MenuHandler()
-    {
-        menuOpenKeyBind = new("MenuOpenKey", () => menuOpen.Value = !menuOpen.Value, "The key that opens and closes the utility menu.", KeyCode.Tab);
-        KeyBinds.Add(menuOpenKeyBind);
-    }
+    protected override KeyCode DefaultKey => KeyCode.Tab;
+
+    public override string Description => "Toggles the menu you are currently looking at.";
 
     public override void Update()
     {
         if (_3DashUtils.currentKeybindEditing == null)
         {
-            if (MenuHandler.menuOpenKeyBind.KeyBind == KeyCode.None)
+            if (KeyBind == KeyCode.None)
             {
                 _3DashUtils.menuOpenFallback = true;
-                _3DashUtils.EditKey(new(KeyCode.None, (key) => MenuHandler.menuOpenKeyBind.KeyBind = key, "Open Menu"));
+                _3DashUtils.EditKey(new(DefaultKey, (key) => KeyBind = key, "Open Menu"));
                 return;
             }
             Extensions.CollectKeyBindInfos().Do((bind) =>
