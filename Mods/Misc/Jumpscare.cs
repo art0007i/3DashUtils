@@ -29,7 +29,7 @@ public class Jumpscare : ToggleModule
 
     public Jumpscare()
     {
-        chanceConfig = new SliderConfig<double>(this, "Opacity", 0.05f, "Controls how opaque the hitboxes will be (0 means invisible).", 0, 1);
+        chanceConfig = new SliderConfig<double>(this, "Chance", 0.05f, "The chance that a jumpscare will appear. 1 means always, 0 means never.", 0, 1);
     }
     public override void Awake()
     {
