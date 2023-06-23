@@ -117,6 +117,10 @@ public class _3DashUtils : BaseUnityPlugin
     {
         _3DashUtils.moduleList.Do((p) => p.FixedUpdate());
     }
+    public void LateUpdate()
+    {
+        _3DashUtils.moduleList.Do((p) => p.LateUpdate());
+    }
 
     public void OnGUI()
     {

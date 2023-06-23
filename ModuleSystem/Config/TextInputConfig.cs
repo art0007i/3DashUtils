@@ -36,9 +36,7 @@ class TextInputConfig<T> : ConfigOptionBase<T>
         {
             throw new ArgumentException("The passed type parameter T was not one of the supported types.");
         }
-        _3DashUtils.Log.LogMessage("cok");
         var parser = Extensions.CastDelegate<TryParseWithCheck<T>>(func);
-        _3DashUtils.Log.LogMessage("cokc");
         var check = parsedValueCheck ?? Dummycheck;
 
 
@@ -60,7 +58,6 @@ class TextInputConfig<T> : ConfigOptionBase<T>
         }
     }
 }
-
 
 public delegate bool TryParse<T>(string text, out T parse); 
 public delegate bool TryParseWithCheck<T>(string text, out T parse, Func<T,bool> check); 

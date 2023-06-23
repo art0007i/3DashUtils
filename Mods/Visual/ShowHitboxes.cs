@@ -4,6 +4,7 @@ using Gizmos = Popcron.Gizmos;
 using UnityEngine;
 using _3DashUtils.ModuleSystem;
 using UnityEngine.SceneManagement;
+using _3DashUtils.ModuleSystem.Config;
 
 namespace _3DashUtils.Mods.Visual;
 
@@ -16,6 +17,15 @@ public class ShowHitboxes : ToggleModule
     public override string Description => "Shows hitboxes of all interactable objects.";
 
     protected override bool Default => false;
+
+
+    public static float Opacity => opactiyOption.Value;
+    private static ConfigOptionBase<float> opactiyOption;
+
+    public ShowHitboxes()
+    {
+        opactiyOption = new SliderConfig<float>(this, "Opacity", 0.75f, "Controls how opaque the hitboxes will be (0 means invisible).", 0, 1);
+    }
 
     public override void Start()
     {
@@ -30,6 +40,9 @@ public class ShowHitboxes : ToggleModule
 
     public static void RenderHitboxes()
     {
+        _3DashUtils.CustomMaterial.SetFloat("_Alpha", Opacity);
+        _3DashUtils.RedMaterial.SetFloat("_Alpha", Opacity);
+
         Gizmos.Material = _3DashUtils.CustomMaterial;
 
         GameObject.FindGameObjectsWithTag("Player").SelectMany(p => p.GetComponents<PlayerScript>())
@@ -54,16 +67,11 @@ public class ShowHitboxes : ToggleModule
         GameObject.FindGameObjectsWithTag("Orb").SelectMany(p => p.GetComponents<Collider>())
             .Do(coll => RenderCollider(coll, new Color(1f, 0.5f, 0f)));
 
+        // this works until they rename the pads and portals
         SceneManager.GetActiveScene().GetRootGameObjects()
             .Where(go => go.name.Contains("Pad") || go.name.Contains("Portal"))
             .SelectMany(go => go.GetComponentsInChildren<Collider>())
             .Do((coll) => RenderCollider(coll, new Color(1, 0.5f, 0)));
-        /*
-        Object.FindObjectsOfType<PadScript>().SelectMany(p => p.gameObject.GetComponents<Collider>())
-            .Do(coll => RenderCollider(coll, new Color(1f, 0.5f, 0f)));
-
-        Object.FindObjectsOfType<PortalScript>().SelectMany(p => p.gameObject.GetComponents<Collider>())
-            .Do(coll => RenderCollider(coll, new Color(1f, 0.5f, 0f)));*/
 
     }
 
