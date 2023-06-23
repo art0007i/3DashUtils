@@ -21,6 +21,12 @@
         /// Called whenever the equivalent unity function gets called.
         /// </summary>
         public abstract void FixedUpdate();
+
+        /// <summary>
+        /// Called whenever the equivalent unity function gets called.
+        /// </summary>
+        public abstract void LateUpdate();
+
         /// <summary>
         /// Called whenever the equivalent unity function gets called.
         /// <br/>

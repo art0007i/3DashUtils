@@ -5,17 +5,17 @@ using UnityEngine;
 
 namespace _3DashUtils.ModuleSystem
 {
-    public abstract class ToggleModule : ModuleBase, IConfigurableModule
+    public abstract class ToggleModule : ModuleBase, IConfigurableModule, IKeybindModule
     {
-        List<IConfigOption> IConfigurableModule.ConfigOptions => ConfigOptions;
-        private List<IConfigOption> ConfigOptions = new();
+        public List<IConfigOption> ConfigOptions { get; private set; } = new();
+        public List<KeyBindInfo> KeyBinds { get; private set; } = new();
 
         private bool settingsOpen;
 
-        public KeyCode KeyBind { get => KeyBindConfigEntry.Value; set { KeyBindConfigEntry.Value = value; } }
+        public KeyCode KeyBind { get => KeyBindConfigEntry.KeyBind; set => KeyBindConfigEntry.KeyBind = value; }
 
         protected ConfigEntry<bool> ConfigEntry { get; private set; }
-        protected ConfigEntry<KeyCode> KeyBindConfigEntry { get; private set; }
+        protected KeyBindInfo KeyBindConfigEntry { get; private set; }
 
         public bool Enabled { get => ConfigEntry.Value; set { ConfigEntry.Value = value; } }
         protected abstract bool Default { get; }
@@ -27,7 +27,8 @@ namespace _3DashUtils.ModuleSystem
         public ToggleModule()
         {
             ConfigEntry = _3DashUtils.ConfigFile.Bind(CategoryName, this.GetType().Name, Default, Description);
-            KeyBindConfigEntry = _3DashUtils.ConfigFile.Bind("Keybinds", this.GetType().Name, DefaultKey, "Keybind for toggling the " + this.GetType().Name + " Module");
+            KeyBindConfigEntry = new(this.GetType().Name,()=> Enabled = !Enabled, "Keybind for toggling the " + this.GetType().Name + " Module", DefaultKey);
+            KeyBinds.Add(KeyBindConfigEntry);
         }
 
         public override void Start()
@@ -42,18 +43,30 @@ namespace _3DashUtils.ModuleSystem
         {
             GUILayout.BeginHorizontal();
             {
-                var text = $"{ModuleName}: " + Extensions.GetEnabledText(Enabled);
                 string tip = null;
                 if (Description != null)
                 {
                     tip = this.GenerateTooltip(Description);
                 }
-                if (GUILayout.Button(new GUIContent(text, tip), GUILayout.ExpandWidth(true)))
+                var editKeys = Extensions.EditingKeybinds();
+                if (editKeys)
                 {
-                    Enabled = !Enabled;
-                    OnToggle();
+                    var text = $"{ModuleName}: <b>" + KeyBind.ToString() + "</b>";
+                    if(GUILayout.Button(new GUIContent(text, tip), GUILayout.ExpandWidth(true)))
+                    {
+                        _3DashUtils.EditKey(new(DefaultKey, (key) => KeyBind = key, ModuleName));
+                    }
                 }
-                if(ConfigOptions.Count > 0)
+                else
+                {
+                    var text = $"{ModuleName}: " + Extensions.GetEnabledText(Enabled);
+                    if (GUILayout.Button(new GUIContent(text, tip), GUILayout.ExpandWidth(true)))
+                    {
+                        Enabled = !Enabled;
+                        OnToggle();
+                    }
+                }
+                if (ConfigOptions.Count > 0)
                 {
                     var content = new GUIContent(settingsOpen ? "˃" : "˅", tip);
                     var width = GUIStyles.ConfigButton.CalcHeight(content, 1f);

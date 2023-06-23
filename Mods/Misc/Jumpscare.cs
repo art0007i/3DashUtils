@@ -29,8 +29,7 @@ public class Jumpscare : ToggleModule
 
     public Jumpscare()
     {
-        // inclusive bounds because why not let people make impossible jumpscare or always jumpscare
-        chanceConfig = new TextInputConfig<double>(this, "Chance", 0.05, "The chance that a jumpscare will appear. 1 means always, 0 means never.", (v)=>v >= 0 && v <= 1);
+        chanceConfig = new SliderConfig<double>(this, "Opacity", 0.05f, "Controls how opaque the hitboxes will be (0 means invisible).", 0, 1);
     }
     public override void Awake()
     {

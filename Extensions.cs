@@ -1,6 +1,7 @@
 ﻿using _3DashUtils.ModuleSystem;
 using _3DashUtils.ModuleSystem.Config;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -36,6 +37,12 @@ public static class Extensions
     }
 
     /// <summary>
+    /// The key bind which when pressed will activate key bind editing mode.
+    /// I'm so sorry for the variable name.
+    /// </summary>
+    public static KeyCode keyBindEditKeyBind = KeyCode.LeftShift;
+
+    /// <summary>
     /// Returns true if the user is in keybind editing mode.
     /// Use this function to add behavior to allow editing binds.
     /// </summary>
@@ -43,7 +50,7 @@ public static class Extensions
     public static bool EditingKeybinds()
     {
         // will be used for config system.
-        return false;
+        return _3DashUtils.currentKeybindEditing is KeyBindEditInfo || Input.GetKey(keyBindEditKeyBind);
     }
 
     /// <summary>
@@ -180,5 +187,23 @@ public static class Extensions
     public static T CastDelegate<T>(Delegate d) where T : Delegate
     {
         return (T)d.Method.CreateDelegate(typeof(T));
+    }
+
+    /// <summary>
+    /// Creates a new rect of size <paramref name="size"/> in the middle of the game window.
+    /// </summary>
+    public static Rect GetMiddleOfScreenRect(Vector2 size)
+    {
+        Vector2 screnSize = new(Screen.width, Screen.height);
+        var screenPos = (screnSize - size) / 2;
+        return new Rect(screenPos, size);
+    }
+
+    /// <summary>
+    /// Returns an IEnumerable that contains KeyBindInfos of every single module.
+    /// </summary>
+    public static IEnumerable<KeyBindInfo> CollectKeyBindInfos()
+    {
+        return _3DashUtils.moduleList.OfType<IKeybindModule>().SelectMany((k) => k.KeyBinds);
     }
 }

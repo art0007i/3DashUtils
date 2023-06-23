@@ -1,4 +1,6 @@
-﻿namespace _3DashUtils.ModuleSystem;
+﻿using System.Collections.Generic;
+
+namespace _3DashUtils.ModuleSystem;
 
 /// <summary>
 /// The class that you should inherit when making a new module.
@@ -43,6 +45,9 @@ public abstract class ModuleBase : IMenuModule
     {
     }
     public virtual void FixedUpdate()
+    {
+    }
+    public virtual void LateUpdate()
     {
     }
 }
