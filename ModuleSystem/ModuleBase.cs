@@ -45,4 +45,7 @@ public abstract class ModuleBase : IMenuModule
     public virtual void FixedUpdate()
     {
     }
+    public virtual void LateUpdate()
+    {
+    }
 }
