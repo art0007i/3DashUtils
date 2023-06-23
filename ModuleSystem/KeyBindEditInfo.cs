@@ -14,9 +14,9 @@ namespace _3DashUtils.ModuleSystem;
 public class KeyBindEditInfo
 {
     /// <summary>
-    /// The key that is currently bound to the module. This field is currently unused lol
+    /// The default key that is used when resetting the keybind.
     /// </summary>
-    public KeyCode currentKey;
+    public KeyCode defaultKey;
     /// <summary>
     /// Will be called whenever the user selects a new keybind. Does not get called if the user cancels editing.
     /// </summary>
@@ -33,9 +33,9 @@ public class KeyBindEditInfo
     public bool editingFinished;
     public KeyCode selectedKey;
 
-    public KeyBindEditInfo(KeyCode currentKey, Action<KeyCode> callback, string keyBindName)
+    public KeyBindEditInfo(KeyCode defaultKey, Action<KeyCode> callback, string keyBindName)
     {
-        this.currentKey = currentKey;
+        this.defaultKey = defaultKey;
         this.callback = callback;
         this.keyBindName = keyBindName;
     }

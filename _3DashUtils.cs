@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using _3DashUtils.Mods.Hidden;
+using _3DashUtils.Mods.Misc;
 using _3DashUtils.ModuleSystem;
 using BepInEx;
 using BepInEx.Configuration;
@@ -164,7 +164,7 @@ public class _3DashUtils : BaseUnityPlugin
                     // it makes sense, plus it's the suicide keybind so we can use it.
                     else if (Input.GetKeyDown(KeyCode.Backspace))
                     {
-                        i.callback(KeyCode.None);
+                        i.callback(i.defaultKey);
                         i.editingFinished = true;
                     }
                     else
@@ -219,7 +219,7 @@ public class _3DashUtils : BaseUnityPlugin
             }, "Editing Keybind");
             GUI.enabled = false;
         }
-        if (MenuHandler.menuOpen.Value)
+        if (Extensions.Enabled<UtilityMenu>())
         {
             foreach (var key in moduleCategories.Keys)
             {
