@@ -36,7 +36,7 @@ public class UtilityMenu : ToggleModule, IKeybindModule
                 }
             });
         }
-        if (_3DashUtils.currentKeybindEditing.editingFinished)
+        else if (_3DashUtils.currentKeybindEditing.editingFinished)
         {
             _3DashUtils.currentKeybindEditing = null;
             _3DashUtils.conflicts = null;

@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Sockets;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using _3DashUtils.Mods.Player;
 using _3DashUtils.ModuleSystem;
+using _3DashUtils.ModuleSystem.Config;
 using BepInEx.Configuration;
 using HarmonyLib;
 using UnityEngine;
@@ -19,13 +19,13 @@ public enum ReplayMode
     Recording,
     Replaying
 }
-public class ReplayModule : ToggleModule
+public class ReplayModule : ToggleModule, IConfigurableModule
 {
     public override string CategoryName => "Replays";
 
-    public override string ModuleName => "Replay System";
+    public override string ModuleName => "[Beta] Replay System";
 
-    public override string Description => "Allows you to record and play replay files";
+    public override string Description => "Allows you to record and play replay files. Currently slightly unstable.";
 
     // these 2 are for recording
     static public double lastOffset;
@@ -35,7 +35,7 @@ public class ReplayModule : ToggleModule
     public static int lastKframe = -1;
     public static bool shouldClick;
 
-    static public ClickReplay testReplay = new();
+    static public ClickReplay CurrentReplay = new();
 
     public static double CurrentTime => lastOffset + Time.timeSinceLevelLoadAsDouble;
 
@@ -45,8 +45,30 @@ public class ReplayModule : ToggleModule
 
     public static ConfigEntry<ReplayMode> modeConfig = _3DashUtils.ConfigFile.Bind("Replays", "Mode", ReplayMode.Recording, "Current mode of the ReplayModule.");
 
+    public static string ReplayName { get => replayNameOption.Value; set => replayNameOption.Value = value; }
+    public static string ReplayPath { get => Path.Combine(basePath, ReplayName) + ".3dr"; }
+    public static ConfigOptionBase<string> replayNameOption { get; set; }
 
-    string path = Path.Combine(Extensions.GetPluginDataPath(), "Replays", "testMacro.3dr"); //3dash replay (.3dr)
+    static string basePath = Path.Combine(Extensions.GetPluginDataPath(), "Replays"); //3dash replay (.3dr)
+
+    public ReplayModule()
+    {
+        replayNameOption = new TextInputConfig<string>(this, "ReplayName", "replay name", "The name of the replay you will save/load.", PathValidator);
+    }
+
+    public static bool PathValidator(string path)
+    {
+        var boo = true;
+        try
+        {
+            Path.GetFullPath(Path.Combine(basePath, path) + ".3dr");
+        }
+        catch
+        {
+            boo = false;
+        }
+        return boo;
+    }
 
     public override void Awake()
     {
@@ -62,11 +84,11 @@ public class ReplayModule : ToggleModule
 
         if (GUILayout.Button("Save Replay"))
         {
-            File.WriteAllText(path, ReplayConverter.ReplayToString(testReplay));
+            File.WriteAllText(ReplayPath, ReplayConverter.ReplayToString(CurrentReplay));
         }
         if (GUILayout.Button("Load Replay"))
         {
-            testReplay = ReplayConverter.StringToReplay(File.ReadAllText(path));
+            CurrentReplay = ReplayConverter.StringToReplay(File.ReadAllText(ReplayPath));
         }
     }
 
@@ -74,11 +96,11 @@ public class ReplayModule : ToggleModule
     public static void RemoveFutureClicks()
     {
         _3DashUtils.Log.LogMessage("removeing everything after " + CurrentTime);
-        for (int i = testReplay.Count - 1; i >= 0; i--)
+        for (int i = CurrentReplay.Count - 1; i >= 0; i--)
         {
-            if (testReplay[i].time >= CurrentTime)
+            if (CurrentReplay[i].time >= CurrentTime)
             {
-                testReplay.RemoveAt(i);
+                CurrentReplay.RemoveAt(i);
             }
         }
     }
@@ -177,22 +199,22 @@ class ReplayModulePatch
 
     [HarmonyPrefix]
     [HarmonyPatch("Update")]
-    public static void UpdatePrefix(PlayerScriptEditor __instance)
+    public static void UpdatePrefix(PlayerScript __instance)
     {
         if (Extensions.Enabled<ReplayModule>() && ReplayModule.Mode == ReplayMode.Replaying)
         {
-            var i = ReplayModule.testReplay.FindLastIndex((l) => l.time <= ReplayModule.CurrentTime);
+            // safety window of 0.001 (dT at 60fps is 0.1666... so 0.001 shouldn't fuck up subframe :)
+            var i = ReplayModule.CurrentReplay.FindLastIndex((l) => l.time <= (ReplayModule.CurrentTime+0.001));
             if (i >= 0)
             {
-                var currentKframe = ReplayModule.testReplay[i];
+                var currentKframe = ReplayModule.CurrentReplay[i];
                 var shouldClick = currentKframe.click;
                 var last = ReplayModule.lastKframe;
                 if (last != i)
                 {
-                    last = last < 0 ? 0 : last;
-                    var count = i - last;
+                    var count = Math.Abs(i - last);
                     // check if we skipped any click frames. if so click them
-                    if (count >= 1 && ReplayModule.testReplay.GetRange(last, count).Any((k) => k.click = true))
+                    if (count >= 1 && i+count < ReplayModule.CurrentReplay.Count && ReplayModule.CurrentReplay.GetRange(i, count).Any((k) => k.click == true))
                     {
                         shouldClick = true;
                     }
@@ -228,7 +250,7 @@ class ReplayModulePatch
 
     [HarmonyPostfix]
     [HarmonyPatch("Update")]
-    public static void UpdatePostfix(PlayerScriptEditor __instance)
+    public static void UpdatePostfix(PlayerScript __instance)
     {
         if (Extensions.Enabled<ReplayModule>() && ReplayModule.Mode == ReplayMode.Recording)
         {
@@ -237,11 +259,14 @@ class ReplayModulePatch
             var click = player.jumpInput;
             if (ReplayModule.lastClick != click)
             {
-                _3DashUtils.Log.LogMessage("adding click " + click + " at " + ReplayModule.CurrentTime);
-                ReplayModule.testReplay.Add(ReplayModule.CurrentTime, click);
+                var t = ReplayModule.CurrentTime;
+                ReplayModule.CurrentReplay.Add(t, click);
+                //_3DashUtils.Log.LogMessage("adding click " + click + " at " + ReplayModule.CurrentTime);
             }
             ReplayModule.lastClick = click;
         }
+        //if(!PauseMenuManager.paused)
+        //    _3DashUtils.Log.LogMessage("jumpo!! " + ReplayModule.CurrentTime.ToString() + " " + __instance.jumpInput);
     }
 }
 
