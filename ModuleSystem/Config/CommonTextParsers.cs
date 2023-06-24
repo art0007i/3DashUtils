@@ -22,6 +22,10 @@ public class CommonTextParsers
             typeof(double),
             TryParseDouble
         },
+        {
+            typeof(string),
+            StringParser
+        }
     };
 
     public static bool TryParseInt(string text, out int value, Func<int, bool> checkValue)
@@ -35,5 +39,10 @@ public class CommonTextParsers
     public static bool TryParseDouble(string text, out double value, Func<double, bool> checkValue)
     {
         return double.TryParse(text, out value) && checkValue(value);
+    }
+    public static bool StringParser(string text, out string value, Func<string, bool> checkValue)
+    {
+        value = text;
+        return checkValue(text);
     }
 }
