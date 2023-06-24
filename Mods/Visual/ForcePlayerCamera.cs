@@ -25,7 +25,11 @@ public class ForcePlayerCamera : ToggleModule
                 var player = GameObject.Find("ActualPlayer").transform.localRotation;
                 player.ToAngleAxis(out var angle, out var axis);
                 cam.transform.localRotation = Quaternion.AngleAxis(angle + 90, axis);
-                cam.GetComponent<Animator>().enabled = false;
+                var anim = cam.GetComponent<Animator>();
+                if(anim != null)
+                {
+                    anim.enabled = false;
+                }
             }
         }
         Object.FindObjectsOfType<CameraPlayback>().Do(cam =>
