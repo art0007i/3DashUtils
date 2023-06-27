@@ -12,6 +12,8 @@ We have a discord server! Check it out here: https://discord.gg/dSBMSe6CZC
 
 There are 2 versions of 3DashUtils available, one for [BepInEx](https://github.com/BepInEx/BepInEx) and one for [MelonLoader](https://melonwiki.xyz/)
 
+⚠ The BepInEx install does not work on 3DashPlus. If you are using 3DashPlus use the MelonLoader version!
+
 ### BepInEx
 1. Download [BepInEx](https://github.com/BepInEx/BepInEx/releases/tag/v5.4.21)
 2. Extract the downloaded zip file on top of your game (the BepInEx folder should be in the same folder as 3Dash.exe)
