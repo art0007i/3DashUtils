@@ -27,7 +27,7 @@ namespace _3DashUtils.ModuleSystem
         public ToggleModule()
         {
             ConfigEntry = _3DashUtils.ConfigFile.Bind(CategoryName, this.GetType().Name, Default, Description);
-            KeyBindConfigEntry = new(this.GetType().Name,()=> Enabled = !Enabled, "Keybind for toggling the " + this.GetType().Name + " Module", DefaultKey);
+            KeyBindConfigEntry = new(this.GetType().Name, () => Enabled = !Enabled, "Keybind for toggling the " + this.GetType().Name + " Module", DefaultKey);
             KeyBinds.Add(KeyBindConfigEntry);
         }
 
@@ -52,7 +52,7 @@ namespace _3DashUtils.ModuleSystem
                 if (editKeys)
                 {
                     var text = $"{ModuleName}: <b>" + KeyBind.ToString() + "</b>";
-                    if(GUILayout.Button(new GUIContent(text, tip), GUILayout.ExpandWidth(true)))
+                    if (GUILayout.Button(new GUIContent(text, tip), GUILayout.ExpandWidth(true)))
                     {
                         _3DashUtils.EditKey(new(DefaultKey, (key) => KeyBind = key, ModuleName));
                     }

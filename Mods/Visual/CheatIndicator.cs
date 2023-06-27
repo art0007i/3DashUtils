@@ -21,7 +21,8 @@ internal class CheatIndicator : ToggleModule
     const int spacing = 5;
     const int fontSize = 24;
 
-    public CheatIndicator() {
+    public CheatIndicator()
+    {
         showNonCheatsOption = new ToggleConfigOption(this, "Show Non Cheats", false, "Show a green dot when no cheats are enabled.");
     }
 
@@ -31,7 +32,7 @@ internal class CheatIndicator : ToggleModule
         var c = Extensions.CheatsEnabled();
         if (Enabled && (c || ShowNonCheats))
         {
-            if(dotStyle == null)
+            if (dotStyle == null)
             {
                 dotStyle = new GUIStyle(GUI.skin.label);
                 dotStyle.fontSize = fontSize;

@@ -23,7 +23,7 @@ public class MoreLevelSlots : ToggleModule
         if (n <= 0) return;
         var firstButton = saveSelect.fileTexts[0].transform.parent;
         var coll = saveSelect.fileTexts.AsEnumerable();
-        for(int i = 0; i < n; i++)
+        for (int i = 0; i < n; i++)
         {
             var newButton = GameObject.Instantiate(firstButton);
             newButton.transform.SetParent(firstButton.parent, false);
@@ -47,7 +47,7 @@ public class MoreLevelSlots : ToggleModule
 
 
             var buttonsRoot = newScene.GetRootGameObjects().Select((g) => g.transform.Find("Buttons")).FirstOrDefault((g) => g != null);
-            if(buttonsRoot != null)
+            if (buttonsRoot != null)
             {
                 var saveSelect = GameObject.Find("SaveSelect").GetComponent<SaveSelect>();
 
@@ -59,7 +59,7 @@ public class MoreLevelSlots : ToggleModule
                 // 10 default files, dont need to dupe them
                 // 1 extra so u can always have a free slot :)
                 DupeFile(saveSelect, (largetFile - 10) + 1);
-                
+
                 var go = buttonsRoot.gameObject;
                 // this is the actual size of those buttons. wtf
                 // 684.4152, 126.1679

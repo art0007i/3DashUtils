@@ -92,7 +92,7 @@ public class JumpscareScript : MonoBehaviour
         image.sprite = Jumpscare.jumpscareSprite;
         rect.anchorMin = new Vector2(0.5f, 0.5f);
         rect.anchorMax = new Vector2(0.5f, 0.5f);
-        if(Jumpscare.jumpscareAudio != null)
+        if (Jumpscare.jumpscareAudio != null)
         {
             GameObject gameObject = new GameObject("jumpscare audio");
             AudioSource audioSource = (AudioSource)gameObject.AddComponent(typeof(AudioSource));

@@ -17,7 +17,7 @@ public class FastDeath : ToggleModule
     private static ConfigOptionBase<float> timeOption;
     public FastDeath()
     {
-        timeOption = new TextInputConfig<float>(this, "Time", 0, "The time that it takes the player to respawn. (1.2 is the base game default)", (v)=>v>=0);
+        timeOption = new TextInputConfig<float>(this, "Time", 0, "The time that it takes the player to respawn. (1.2 is the base game default)", (v) => v >= 0);
     }
 }
 
@@ -31,7 +31,8 @@ public static class NoDeathAnimationPatch
             var t = Traverse.Create(__instance).Field("timePassed");
             var n = t.GetValue<float>() + Time.deltaTime;
             t.SetValue(n);
-            if (n >= FastDeath.Time) {
+            if (n >= FastDeath.Time)
+            {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
             return false;

@@ -46,8 +46,8 @@ public class Shortcuts : ModuleBase, IKeybindModule
                 "Keybind for loading the level editor instantly.")
             ),
             new("Online Levels", "Loads the online levels page instantly.",
-                new("OnlineLevelsShortcut", 
-                ()=>SceneManager.LoadScene("Online Levels Hub"), 
+                new("OnlineLevelsShortcut",
+                ()=>SceneManager.LoadScene("Online Levels Hub"),
                 "Keybind for loading the online levels page instantly.")
             ),
             new("Offline Levels", "Loads the offline levels page instantly.",
@@ -60,7 +60,7 @@ public class Shortcuts : ModuleBase, IKeybindModule
             ),
             new("<color=orange>Quit Game</color>", "Loads the offline levels page instantly.",
                 new("QuitGameShortcut",
-                Application.Quit, 
+                Application.Quit,
                 "Keybind for quitting the game instantly.")
             ),
         };

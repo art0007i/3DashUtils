@@ -1,5 +1,10 @@
 ﻿using _3DashUtils.ModuleSystem;
 using HarmonyLib;
+using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Reflection.Emit;
+using TMPro;
 
 namespace _3DashUtils.Mods.Editor;
 
@@ -14,18 +19,42 @@ public class ObjectLimitBypass : ToggleModule
     protected override bool Default => true;
 }
 
-[HarmonyPatch(typeof(FlatEditor), "Update")]
+[HarmonyPatch(typeof(FlatEditor))]
 public class ObjectLimitPatch
 {
-    private static void Postfix(ref int ___objectLimit)
+    [HarmonyPostfix]
+    [HarmonyPatch("UpdateUI")]
+    public static void UIPostfix(TextMeshProUGUI ___objectLimitText)
     {
         if (Extensions.Enabled<ObjectLimitBypass>())
         {
-            ___objectLimit = int.MaxValue;
+            ___objectLimitText.text = "";
         }
-        else
+    }
+
+    public static MethodInfo totalItemsFunc = AccessTools.Method(typeof(FlatEditor), "GetTotalItems");
+
+    [HarmonyTranspiler]
+    [HarmonyPatch("Update")]
+    public static IEnumerable<CodeInstruction> UpdateTranspiler(IEnumerable<CodeInstruction> codes)
+    {
+        foreach (var code in codes)
         {
-            ___objectLimit = 4000;
+            if (code.Calls(totalItemsFunc))
+            {
+                yield return new(OpCodes.Call, typeof(ObjectLimitPatch).GetMethod(nameof(Inject)));   
+            }
+            else
+            {
+                yield return code;
+            }
         }
+    }
+
+    public static int Inject(FlatEditor editor)
+    {
+        if(Extensions.Enabled<ObjectLimitBypass>())
+            return -1;
+        return (int)totalItemsFunc.Invoke(editor, null);
     }
 }

@@ -76,7 +76,7 @@ public class ReplayModule : ToggleModule, IConfigurableModule
     }
 
     public override void OnGUI()
-        {
+    {
         base.OnGUI();
         //var w = GUILayoutUtility.GetLastRect().width /2;
         var SelectedButtonStyle = new GUIStyle(GUI.skin.button);
@@ -204,7 +204,7 @@ class ReplayModulePatch
         if (Extensions.Enabled<ReplayModule>() && ReplayModule.Mode == ReplayMode.Replaying)
         {
             // safety window of 0.001 (dT at 60fps is 0.1666... so 0.001 shouldn't fuck up subframe :)
-            var i = ReplayModule.CurrentReplay.FindLastIndex((l) => l.time <= (ReplayModule.CurrentTime+0.001));
+            var i = ReplayModule.CurrentReplay.FindLastIndex((l) => l.time <= (ReplayModule.CurrentTime + 0.001));
             if (i >= 0)
             {
                 var currentKframe = ReplayModule.CurrentReplay[i];
@@ -214,7 +214,7 @@ class ReplayModulePatch
                 {
                     var count = Math.Abs(i - last);
                     // check if we skipped any click frames. if so click them
-                    if (count >= 1 && i+count < ReplayModule.CurrentReplay.Count && ReplayModule.CurrentReplay.GetRange(i, count).Any((k) => k.click == true))
+                    if (count >= 1 && i + count < ReplayModule.CurrentReplay.Count && ReplayModule.CurrentReplay.GetRange(i, count).Any((k) => k.click == true))
                     {
                         shouldClick = true;
                     }
