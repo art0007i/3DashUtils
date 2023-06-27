@@ -159,7 +159,11 @@ public static class Extensions
 
     public static string GetPluginDataPath()
     {
+#if BEPINEX
         return Path.GetDirectoryName(typeof(_3DashUtils).Assembly.Location);
+#elif MELON
+        return Path.GetFullPath(Path.GetDirectoryName(typeof(_3DashUtils).Assembly.Location) + "/../UserData/3DashUtils");
+#endif
     }
     /// <summary>
     /// Finds a GameObject with name <paramref name="name"/> and gets the component of type <typeparamref name="T"/> from it.

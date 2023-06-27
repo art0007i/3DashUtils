@@ -1,19 +1,32 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using _3DashUtils.Mods.Misc;
 using _3DashUtils.ModuleSystem;
+#if BEPINEX
 using BepInEx;
 using BepInEx.Configuration;
-using BepInEx.Logging;
+using System.IO; // maybe this should be outside, but it's unused in melon rn and i remove unused too often
+#elif MELON
+using MelonLoader;
+#endif
 using HarmonyLib;
 using UnityEngine;
+using _3DashUtils.Compat;
 
 namespace _3DashUtils;
 
+#if BEPINEX
 [BepInPlugin(GUID, MODNAME, VERSION)]
-public class _3DashUtils : BaseUnityPlugin
+#endif
+
+public class _3DashUtils 
+    :
+#if BEPINEX
+    BaseUnityPlugin
+#elif MELON
+    MelonMod
+#endif
 {
     public const string MODNAME = "3DashUtils";
 
@@ -21,12 +34,15 @@ public class _3DashUtils : BaseUnityPlugin
 
     public const string GUID = "me.art0007i.3DashUtils";
 
-    public const string VERSION = "1.0.0";
+    public const string VERSION = "1.1.0";
 
+    public static UniversalLogger Log { get; private set; }
+
+#if BEPINEX
     public static ConfigFile ConfigFile = new ConfigFile(Path.Combine(Paths.ConfigPath, MODNAME + ".cfg"), saveOnInit: true);
-
-    internal static ManualLogSource Log;
     internal Harmony Harmony;
+#endif
+
     internal static Material CustomMaterial;
     internal static Material RedMaterial;
     internal AssetBundle bundle;
@@ -57,12 +73,17 @@ public class _3DashUtils : BaseUnityPlugin
             this.internalWindowID = internalWindowID;
         }
     }
-
+#if BEPINEX
     private void Awake()
+#elif MELON
+    public override void OnInitializeMelon()
+#endif
     {
-        Log = base.Logger;
-        Log.LogDebug("Plugin Constructing...");
+#if BEPINEX
         Harmony = new Harmony(GUID);
+#endif
+        Log = new(this);
+        Log.Dbg("Plugin Constructing...");
         bundle = AssetBundle.LoadFromMemory(Properties.Resources.shaderbundle);
         var niceMaterial = bundle.LoadAsset<Material>("assets/vcolmat.mat");
         niceMaterial.SetFloat("_Alpha", .69f); // maybe expose this as config later?
@@ -75,7 +96,7 @@ public class _3DashUtils : BaseUnityPlugin
         var modules = typeof(_3DashUtils).Assembly.GetTypes().Where((t) => !t.IsAbstract && !t.IsInterface && typeof(IMenuModule).IsAssignableFrom(t));
         foreach (var mod in modules)
         {
-            Log.LogDebug("	Adding Module " + mod.Name);
+            Log.Dbg("	Adding Module " + mod.Name);
             var modObj = (IMenuModule)Activator.CreateInstance(mod);
             moduleList.Add(modObj);
 
@@ -95,29 +116,52 @@ public class _3DashUtils : BaseUnityPlugin
                 i++;
             }
         }
+#if BEPINEX
         Harmony.PatchAll();
+#endif
         moduleList.Do((p) => p.Awake());
-    }
+#if MELON
+        MelonEvents.OnApplicationLateStart.Subscribe(() => moduleList.Do((p) => p.Start()));
+#endif
 
+    }
+#if BEPINEX
     public void Start()
     {
         moduleList.Do((p) => p.Start());
     }
+    void OnDestroy()
+    {
+        Harmony.UnpatchSelf();
+        bundle.Unload(true);
+    }
+#endif
 
     private string lastTooltipContent;
     private float lastTooltipTime;
 
-
+#if BEPINEX
     public void Update()
+#elif MELON
+    public override void OnUpdate()
+#endif
     {
         moduleList.Do((p) => p.Update());
     }
 
+#if BEPINEX
     public void FixedUpdate()
+#elif MELON
+    public override void OnFixedUpdate()
+#endif
     {
         moduleList.Do((p) => p.FixedUpdate());
     }
+#if BEPINEX
     public void LateUpdate()
+#elif MELON
+    public override void OnLateUpdate()
+#endif
     {
         moduleList.Do((p) => p.LateUpdate());
     }
@@ -133,7 +177,11 @@ public class _3DashUtils : BaseUnityPlugin
         conflicts = null;
     }
 
+#if BEPINEX
     public void OnGUI()
+#elif MELON
+    public override void OnGUI()
+#endif
     {
         //GUI.enabled = false;
         //GUI.Box(new(0, 0, Screen.width, Screen.height), "");
@@ -254,11 +302,5 @@ public class _3DashUtils : BaseUnityPlugin
         }
         GUI.enabled = true;
         moduleList.Do((p) => p.OnUnityGUI());
-    }
-
-    void OnDestroy()
-    {
-        Harmony.UnpatchSelf();
-        bundle.Unload(true);
     }
 }

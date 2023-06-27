@@ -1,5 +1,5 @@
-﻿using _3DashUtils.ModuleSystem;
-using BepInEx.Configuration;
+﻿using _3DashUtils.Compat;
+using _3DashUtils.ModuleSystem;
 using HarmonyLib;
 using UnityEngine;
 
@@ -10,8 +10,9 @@ namespace _3DashUtils.Mods.Hidden;
 /// </summary>
 public class SettingsPersistence : ModuleBase
 {
-    public static ConfigEntry<float> volume = _3DashUtils.ConfigFile.Bind("GameSettings", "Volume", 1f);
-    public static ConfigEntry<bool> showPath = _3DashUtils.ConfigFile.Bind("GameSettings", "ShowPath", false);
+    public static ConfigWrapper<float> volume = new("GameSettings", "Volume", 1f);
+    public static ConfigWrapper<bool> showPath = new("GameSettings", "ShowPath", false);
+
     public override string CategoryName => "Hidden";
 
     public override void Awake()

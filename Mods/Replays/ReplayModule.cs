@@ -5,10 +5,10 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
+using _3DashUtils.Compat;
 using _3DashUtils.Mods.Player;
 using _3DashUtils.ModuleSystem;
 using _3DashUtils.ModuleSystem.Config;
-using BepInEx.Configuration;
 using HarmonyLib;
 using UnityEngine;
 
@@ -43,7 +43,7 @@ public class ReplayModule : ToggleModule, IConfigurableModule
 
     protected override bool Default => false;
 
-    public static ConfigEntry<ReplayMode> modeConfig = _3DashUtils.ConfigFile.Bind("Replays", "Mode", ReplayMode.Recording, "Current mode of the ReplayModule.");
+    public static ConfigWrapper<ReplayMode> modeConfig = new("Replays", "Mode", ReplayMode.Recording, "Current mode of the ReplayModule.");
 
     public static string ReplayName { get => replayNameOption.Value; set => replayNameOption.Value = value; }
     public static string ReplayPath { get => Path.Combine(basePath, ReplayName) + ".3dr"; }
@@ -95,7 +95,7 @@ public class ReplayModule : ToggleModule, IConfigurableModule
 
     public static void RemoveFutureClicks()
     {
-        _3DashUtils.Log.LogMessage("removeing everything after " + CurrentTime);
+        _3DashUtils.Log.Dbg("removeing everything after " + CurrentTime);
         for (int i = CurrentReplay.Count - 1; i >= 0; i--)
         {
             if (CurrentReplay[i].time >= CurrentTime)
@@ -155,7 +155,7 @@ class ReplayModulePatch
         var add = script.gameObject.AddComponent<CheckpointAddon>();
         add.SaveCP(p);
 
-        _3DashUtils.Log.LogMessage("adding cp " + add.savedSceneTime);
+        _3DashUtils.Log.Dbg("adding cp " + add.savedSceneTime);
         // doing this so i dont need an extra il for dup cuz i hate transpiler lol
         return script;
     }
@@ -178,7 +178,7 @@ class ReplayModulePatch
     [HarmonyPatch("Awake")]
     public static void AwakePostfix(PlayerScript __instance)
     {
-        _3DashUtils.Log.LogMessage("death at " + ReplayModule.CurrentTime);
+        _3DashUtils.Log.Dbg("death at " + ReplayModule.CurrentTime);
         ReplayModule.shouldClick = false;
         ReplayModule.lastClick = false;
         ReplayModule.lastKframe = -1;
@@ -189,7 +189,7 @@ class ReplayModulePatch
             if (recentCheckpoint)
             {
                 var a = recentCheckpoint.GetComponent<CheckpointAddon>();
-                _3DashUtils.Log.LogMessage("loading cp " + a.savedSceneTime);
+                _3DashUtils.Log.Dbg("loading cp " + a.savedSceneTime);
                 a.LoadCP(__instance);
             }
         }

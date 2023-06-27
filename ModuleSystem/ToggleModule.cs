@@ -1,5 +1,5 @@
-﻿using _3DashUtils.ModuleSystem.Config;
-using BepInEx.Configuration;
+﻿using _3DashUtils.Compat;
+using _3DashUtils.ModuleSystem.Config;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,7 +14,7 @@ namespace _3DashUtils.ModuleSystem
 
         public KeyCode KeyBind { get => KeyBindConfigEntry.KeyBind; set => KeyBindConfigEntry.KeyBind = value; }
 
-        protected ConfigEntry<bool> ConfigEntry { get; private set; }
+        protected ConfigWrapper<bool> ConfigEntry { get; private set; }
         protected KeyBindInfo KeyBindConfigEntry { get; private set; }
 
         public bool Enabled { get => ConfigEntry.Value; set { ConfigEntry.Value = value; } }
@@ -26,7 +26,7 @@ namespace _3DashUtils.ModuleSystem
 
         public ToggleModule()
         {
-            ConfigEntry = _3DashUtils.ConfigFile.Bind(CategoryName, this.GetType().Name, Default, Description);
+            ConfigEntry = new(CategoryName, this.GetType().Name, Default, Description);
             KeyBindConfigEntry = new(this.GetType().Name, () => Enabled = !Enabled, "Keybind for toggling the " + this.GetType().Name + " Module", DefaultKey);
             KeyBinds.Add(KeyBindConfigEntry);
         }

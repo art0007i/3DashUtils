@@ -1,4 +1,4 @@
-﻿using BepInEx.Configuration;
+﻿using _3DashUtils.Compat;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ public class KeyBindInfo
     public Action KeyCallback;
     public string Name;
     public string Description;
-    public ConfigEntry<KeyCode> keyBindOption;
+    public ConfigWrapper<KeyCode> keyBindOption;
     public KeyCode KeyBind { get => keyBindOption.Value; set { keyBindOption.Value = value; } }
 
     public KeyBindInfo(string name, Action keyCallback, string description = "", KeyCode defaultKey = KeyCode.None)
@@ -21,6 +21,6 @@ public class KeyBindInfo
         KeyCallback = keyCallback;
         Name = name;
         Description = description;
-        keyBindOption = _3DashUtils.ConfigFile.Bind<KeyCode>("Keybinds", name, KeyCode.None, description);
+        keyBindOption = new("Keybinds", name, KeyCode.None, description);
     }
 }
