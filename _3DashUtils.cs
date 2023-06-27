@@ -27,9 +27,6 @@ public class _3DashUtils : BaseUnityPlugin
 
     internal static ManualLogSource Log;
     internal Harmony Harmony;
-    internal static Material CustomMaterial;
-    internal static Material RedMaterial;
-    internal AssetBundle bundle;
 
     /// <summary>
     /// A list of all loaded <see cref="IMenuModule">modules</see>.
@@ -63,13 +60,6 @@ public class _3DashUtils : BaseUnityPlugin
         Log = base.Logger;
         Log.LogDebug("Plugin Constructing...");
         Harmony = new Harmony(GUID);
-        bundle = AssetBundle.LoadFromMemory(Properties.Resources.shaderbundle);
-        var niceMaterial = bundle.LoadAsset<Material>("assets/vcolmat.mat");
-        niceMaterial.SetFloat("_Alpha", .69f); // maybe expose this as config later?
-        var redMat = new Material(niceMaterial);
-        redMat.SetColor("_Color", Color.red);
-        CustomMaterial = niceMaterial;
-        RedMaterial = redMat;
 
         int i = 0;
         var modules = typeof(_3DashUtils).Assembly.GetTypes().Where((t) => !t.IsAbstract && !t.IsInterface && typeof(IMenuModule).IsAssignableFrom(t));
@@ -259,6 +249,5 @@ public class _3DashUtils : BaseUnityPlugin
     void OnDestroy()
     {
         Harmony.UnpatchSelf();
-        bundle.Unload(true);
     }
 }
