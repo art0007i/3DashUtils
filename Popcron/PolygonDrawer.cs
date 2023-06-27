@@ -7,7 +7,7 @@ public class PolygonDrawer : Drawer
 {
     public override int Draw(ref Vector3[] buffer, params object[] values)
     {
-        // could make it double??? nahh
+        // could make it double sided??? nahh
 
         Vector3 position = (Vector3)values[0];
         int points = (int)values[1];

@@ -1,9 +1,11 @@
+using System;
 using UnityEngine;
 
 namespace Popcron;
 
 public class LineDrawer : Drawer
 {
+    [Obsolete("THIS FUNCTION IS BROKEN, BECAUSE I CHANGED THE DRAWING MODE TO GL_TRIANGLES")]
     public override int Draw(ref Vector3[] buffer, params object[] args)
     {
         buffer[0] = (Vector3)args[0];
