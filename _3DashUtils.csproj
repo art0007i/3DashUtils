@@ -9,11 +9,46 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <CopyToMods Condition="'$(CopyToMods)'==''">true</CopyToMods>
     <GamePath>$(MSBuildThisFileDirectory)3Dash</GamePath>
-    <GamePath Condition="Exists('E:\nothing. trust me\3Dash Windows v1.2.1\')">E:\nothing. trust me\3Dash Windows v1.2.1\</GamePath>
+    <GamePath Condition="Exists('E:\nothing. trust me\3Dash_PLUS_beta\')">E:\nothing. trust me\3Dash_PLUS_beta\</GamePath>
     <GamePath Condition="Exists('C:\Users\Andrew\Desktop\3Dash Windows v1.2.1\')">C:\Users\Andrew\Desktop\3Dash Windows v1.2.1\</GamePath>
-    <PluginPath>$(GamePath)BepInEx/plugins/$(AssemblyName)/</PluginPath>
+    <!--
+      Can be either `MELON` or `BEPINEX`
+    -->
+    <TargetLoader>BEPINEX</TargetLoader>
+    <DefineConstants>$(TargetLoader)</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup />
+  
+  <Choose>
+    <When  Condition="'$(TargetLoader)'=='BEPINEX'">
+      <PropertyGroup>
+        <PluginPath>$(GamePath)BepInEx/plugins/$(AssemblyName)/</PluginPath>
+        <ResourcePath>$(PluginPath)Resources/</ResourcePath>
+      </PropertyGroup>
+      <ItemGroup>
+        <Reference Include="0Harmony">
+          <HintPath>$(GamePath)BepInEx\core\0Harmony.dll</HintPath>
+        </Reference>
+        <Reference Include="BepInEx">
+          <HintPath>$(GamePath)BepInEx\core\BepInEx.dll</HintPath>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When  Condition="'$(TargetLoader)'=='MELON'">
+      <PropertyGroup>
+        <PluginPath>$(GamePath)Mods/</PluginPath>
+        <ResourcePath>$(GamePath)UserData/$(AssemblyName)/Resources</ResourcePath>
+      </PropertyGroup>
+      <ItemGroup>
+        <Reference Include="0Harmony">
+          <HintPath>$(GamePath)MelonLoader\net35\0Harmony.dll</HintPath>
+        </Reference>
+        <Reference Include="MelonLoader">
+          <HintPath>$(GamePath)MelonLoader\net35\MelonLoader.dll</HintPath>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+
   <ItemGroup>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>$(GamePath)3Dash_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
@@ -23,12 +58,6 @@
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule">
       <HintPath>$(GamePath)3Dash_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
-    </Reference>
-    <Reference Include="BepInEx">
-      <HintPath>$(GamePath)BepInEx\core\BepInEx.dll</HintPath>
-    </Reference>
-    <Reference Include="0Harmony">
-      <HintPath>$(GamePath)BepInEx\core\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AudioModule">
       <HintPath>$(GamePath)3Dash_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
@@ -85,7 +114,8 @@
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(CopyToMods)'=='true'">
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(PluginPath)" />
-    <Copy SourceFiles="@(PluginResources)" DestinationFolder="$(PluginPath)/Resources/" />
     <Message Text="Copied $(TargetFileName) to $(PluginPath)" Importance="high" />
+    <Copy SourceFiles="@(PluginResources)" DestinationFolder="$(ResourcePath)" />
+    <Message Text="Copied Resources to $(ResourcePath)" Importance="high" />
   </Target>
 </Project>

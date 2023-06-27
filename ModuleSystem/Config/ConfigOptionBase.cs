@@ -1,11 +1,11 @@
-﻿using BepInEx.Configuration;
+﻿using _3DashUtils.Compat;
 using System;
 
 namespace _3DashUtils.ModuleSystem.Config;
 
 public abstract class ConfigOptionBase<T> : IConfigOption
 {
-    private ConfigEntry<T> entry;
+    private ConfigWrapper<T> entry;
     /// <summary>
     /// Create a new config option.
     /// </summary>
@@ -17,7 +17,7 @@ public abstract class ConfigOptionBase<T> : IConfigOption
         Description = description;
         try
         {
-            entry = _3DashUtils.ConfigFile.Bind(Category, module.ModuleName.JoinPascalCase() + Name, defaultValue, Description);
+            entry = new(Category, module.ModuleName.JoinPascalCase() + Name, defaultValue, Description);
         }
         catch (Exception e)
         {
