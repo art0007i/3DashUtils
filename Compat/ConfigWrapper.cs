@@ -2,6 +2,7 @@
 using BepInEx.Configuration;
 #elif MELON
 using MelonLoader;
+using UnityEngine;
 #endif
 
 namespace _3DashUtils.Compat;
@@ -27,6 +28,11 @@ public class ConfigWrapper<T>
             cat = MelonPreferences.CreateCategory(category);
         }
         entry = cat.CreateEntry(name.JoinPascalCase(), defaultValue, name, description);
+        // idk melon default value wack
+        if(entry.Value is KeyCode c && name == "UtilityMenu" && c == KeyCode.None)
+        {
+            entry.Value = (T)(object)KeyCode.Tab;
+        }
 #endif
     }
 }
