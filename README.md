@@ -4,6 +4,8 @@ A [BepInEx](https://github.com/BepInEx/BepInEx) 5.x plugin for [3Dash](https://d
 
 It adds a menu (toggled by pressing tab) which gives you access to a bunch of different utilities and fixes.
 
+We have a discord server! Check it out here: https://discord.gg/dSBMSe6CZC
+
 ## Installation
 
 1. Download [BepInEx](https://github.com/BepInEx/BepInEx/releases/tag/v5.4.21)
