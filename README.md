@@ -1,6 +1,6 @@
 # 3DashUtils
 
-A [BepInEx](https://github.com/BepInEx/BepInEx) 5.x plugin for [3Dash](https://delugedrop.itch.io/3dash)
+A utility mod for [3Dash](https://delugedrop.itch.io/3dash)
 
 It adds a menu (toggled by pressing tab) which gives you access to a bunch of different utilities and fixes.
 
@@ -10,10 +10,13 @@ We have a discord server! Check it out here: https://discord.gg/dSBMSe6CZC
 
 ## Installation
 
+There are 2 versions of 3DashUtils available, one for [BepInEx](https://github.com/BepInEx/BepInEx) and one for [MelonLoader](https://melonwiki.xyz/)
+
+### BepInEx
 1. Download [BepInEx](https://github.com/BepInEx/BepInEx/releases/tag/v5.4.21)
 2. Extract the downloaded zip file on top of your game (the BepInEx folder should be in the same folder as 3Dash.exe)
 3. Download [3DashUtils](https://github.com/art0007i/3DashUtils/releases/latest/)
-4. Extract the downloaded zip file into the `BepInEx/plugins` directory. If it doesn't exist you may need to create it yourself.
+4. Extract the downloaded zip file into the `BepInEx` directory. If it doesn't exist you may need to create it yourself.
 After everything is done your folder structure should have these files:
 ```
 3Dash Windows v1.2.1
@@ -25,6 +28,22 @@ After everything is done your folder structure should have these files:
 ├── doorstop_config.ini
 ├── 3Dash.exe
 └── winhttp.dll
+```
+### MelonLoader
+1. [Install MelonLoader](https://melonwiki.xyz/#/?id=automated-installation).
+2. Download [3DashUtils](https://github.com/art0007i/3DashUtils/releases/latest/)
+3. Extract the downloaded zip file into the game directory.
+After everything is done your folder structure should have these files:
+```
+3Dash Windows v1.2.1
+├── Mods/
+│   └── 3DashUtils.dll
+├── UserData/
+│   └── 3DashUtils/
+│       └── Resources/
+│           ├── jumpscare.mp3
+│           └── jumpscare.png
+└── 3Dash.exe
 ```
 
 ## Features
