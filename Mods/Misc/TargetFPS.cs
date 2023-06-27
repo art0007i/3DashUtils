@@ -24,7 +24,7 @@ public class TargetFPS : ToggleModule
 
     public TargetFPS()
     {
-        valueConfig = new TextInputConfig<int>(this, "FPS", 60, "The FPS value that the game will lock to.", (v)=>v>0);
+        valueConfig = new TextInputConfig<int>(this, "FPS", 60, "The FPS value that the game will lock to.", (v) => v > 0);
         lockDelta = new ToggleConfigOption(this, "Lock Delta", false, "Locks the deltaTime of the game to make things more consistent.\nMake sure to use this when recording and playing replays.");
     }
 

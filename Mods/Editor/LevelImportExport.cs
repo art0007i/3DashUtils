@@ -19,13 +19,13 @@ public class LevelImportExport : ModuleBase
     {
 
         var text = "Import Level";
-        if(Time.realtimeSinceStartup - lastErrorTime < ERROR_DURATION)
+        if (Time.realtimeSinceStartup - lastErrorTime < ERROR_DURATION)
         {
             text = "<color=red>Error in import!</color>";
         }
 
         var importTip = this.GenerateTooltip("Override the current save with a level JSON from your clipboard.");
-        if (GUILayout.Button(new GUIContent(text,importTip)))
+        if (GUILayout.Button(new GUIContent(text, importTip)))
         {
             var scn = SceneManager.GetActiveScene();
             var editor = scn.GetRootGameObjects().Where((obj) => obj.GetComponent<LevelEditor>()).First().GetComponent<LevelEditor>();
@@ -35,7 +35,8 @@ public class LevelImportExport : ModuleBase
                 var json = GUIUtility.systemCopyBuffer;
                 var levelObject = editor.JSONToLevel(json);
                 LevelEditor.ImportFromLevelObject(levelObject);
-            } catch
+            }
+            catch
             {
                 lastErrorTime = Time.realtimeSinceStartup;
             }

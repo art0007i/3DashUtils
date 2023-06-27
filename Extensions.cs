@@ -88,7 +88,7 @@ public static class Extensions
     public static bool Enabled<T>() where T : ToggleModule
     {
         return GetModule<T>().Enabled;
-    } 
+    }
 
     /// <summary>
     /// Converts a PascalCase string to insert spaces between the capital letters.

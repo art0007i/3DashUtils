@@ -9,7 +9,6 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace _3DashUtils;
 
@@ -22,7 +21,7 @@ public class _3DashUtils : BaseUnityPlugin
 
     public const string GUID = "me.art0007i.3DashUtils";
 
-	public const string VERSION = "1.0.0";
+    public const string VERSION = "1.0.0";
 
     public static ConfigFile ConfigFile = new ConfigFile(Path.Combine(Paths.ConfigPath, MODNAME + ".cfg"), saveOnInit: true);
 
@@ -146,12 +145,12 @@ public class _3DashUtils : BaseUnityPlugin
                 GUILayout.BeginVertical();
                 if (conflicts == null)
                 {
-                    
-                    GUILayout.Label(menuOpenFallback ? 
+
+                    GUILayout.Label(menuOpenFallback ?
                         $"It seems you have unbound the <b>Menu Open</b> key, please select a new key for it." :
                         $"Enter a new key for <b>{i.keyBindName}</b>"
                     );
-                    if(!menuOpenFallback) GUILayout.Label($"Press <b>ESC</b> to cancel.");
+                    if (!menuOpenFallback) GUILayout.Label($"Press <b>ESC</b> to cancel.");
                     GUILayout.Label($"Press <b>Backspace</b> to reset the key.");
 
                     // I don't know what the best option for these keys are but I think this is a good option.
@@ -205,10 +204,10 @@ public class _3DashUtils : BaseUnityPlugin
                     }
                     else if (opt == 1) // unbind others
                     {
-                        conflicts.Do((kbi)=>kbi.KeyBind = KeyCode.None);
+                        conflicts.Do((kbi) => kbi.KeyBind = KeyCode.None);
                         i.callback(i.selectedKey);
                     } // cancel
-                    if (opt >= 0 || Input.GetKeyDown(KeyCode.Escape)) 
+                    if (opt >= 0 || Input.GetKeyDown(KeyCode.Escape))
                     {
                         i.editingFinished = true;
                         conflicts = null;

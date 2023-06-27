@@ -35,11 +35,11 @@ namespace _3DashUtils.Popcron
                     var idx = ((horizontalDivisions * lat) + lon) * 6;
 
                     buffer[idx] = p1;
-                    buffer[idx+1] = p2;
-                    buffer[idx+2] = p3;
-                    buffer[idx+3] = p2;
-                    buffer[idx+4] = p4;
-                    buffer[idx+5] = p3;
+                    buffer[idx + 1] = p2;
+                    buffer[idx + 2] = p3;
+                    buffer[idx + 3] = p2;
+                    buffer[idx + 4] = p4;
+                    buffer[idx + 5] = p3;
                 }
             }
             // 2 triangles, 3 verts each

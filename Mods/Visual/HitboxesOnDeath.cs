@@ -19,7 +19,7 @@ internal class HitboxesOnDeath : ToggleModule
     {
         if (Extensions.Enabled<ShowHitboxes>() || !Enabled) return;
         var dead = SceneManager.GetActiveScene().GetRootGameObjects().Any(go => go.name.StartsWith("DeathPrefab"));
-        if(dead)
+        if (dead)
         {
             ShowHitboxes.RenderHitboxes();
         }

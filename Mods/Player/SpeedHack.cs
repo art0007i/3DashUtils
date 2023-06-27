@@ -24,7 +24,7 @@ public class SpeedHack : ToggleModule
 
     public SpeedHack()
     {
-        speedConfig = new TextInputConfig<float>(this, "Speed", 1, "The speed that the game will play at.", (v)=>v>0);
+        speedConfig = new TextInputConfig<float>(this, "Speed", 1, "The speed that the game will play at.", (v) => v > 0);
         speedHackAudio = new ToggleConfigOption(this, "Affect Audio", true, "Determines if audio should be affected by SpeedHack.");
     }
 

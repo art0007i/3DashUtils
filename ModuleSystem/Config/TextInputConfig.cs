@@ -30,9 +30,9 @@ class TextInputConfig<T> : ConfigOptionBase<T>
     /// </list>
     /// </summary>
     /// <exception cref="ArgumentException">Thrown whenever the passed parameter <typeparamref name="T"/> is not one of the supported ones.</exception>
-    public TextInputConfig(IMenuModule module, string name, T defaultValue, string description, Func<T,bool> parsedValueCheck = null) : base(module, name, defaultValue, description)
+    public TextInputConfig(IMenuModule module, string name, T defaultValue, string description, Func<T, bool> parsedValueCheck = null) : base(module, name, defaultValue, description)
     {
-        if(!CommonTextParsers.Parsers.TryGetValue(typeof(T), out var func))
+        if (!CommonTextParsers.Parsers.TryGetValue(typeof(T), out var func))
         {
             throw new ArgumentException("The passed type parameter T was not one of the supported types.");
         }
@@ -59,5 +59,5 @@ class TextInputConfig<T> : ConfigOptionBase<T>
     }
 }
 
-public delegate bool TryParse<T>(string text, out T parse); 
-public delegate bool TryParseWithCheck<T>(string text, out T parse, Func<T,bool> check); 
+public delegate bool TryParse<T>(string text, out T parse);
+public delegate bool TryParseWithCheck<T>(string text, out T parse, Func<T, bool> check);

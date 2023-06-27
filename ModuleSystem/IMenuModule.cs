@@ -51,7 +51,7 @@
         /// Higher numbers position the module higher in the list.
         /// </summary>
         public abstract float Priority { get; }
-        
+
         /// <summary>
         /// If the module is considered to be a cheat.
         /// This should only be true if the module is enabled and active. (for example SpeedHack with values >1 is not considered cheating)

@@ -18,7 +18,7 @@ public class SliderConfig<T> : ConfigOptionBase<T>
 
         Min = min;
         Max = max;
-        DecimalPlaces = decimalPlaces;  
+        DecimalPlaces = decimalPlaces;
     }
     public byte DecimalPlaces { get; private set; }
     public T Min { get; private set; }
@@ -29,7 +29,7 @@ public class SliderConfig<T> : ConfigOptionBase<T>
 
     public override void OnGUI()
     {
-        GUILayout.Label(ToFloat(Value).ToString("n"+DecimalPlaces), GUILayout.Width(25));
+        GUILayout.Label(ToFloat(Value).ToString("n" + DecimalPlaces), GUILayout.Width(25));
         Value = FromFloat(GUILayout.HorizontalSlider(ToFloat(Value), ToFloat(Min), ToFloat(Max), GUILayout.ExpandWidth(true)));
     }
 }

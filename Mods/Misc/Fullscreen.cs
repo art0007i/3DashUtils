@@ -24,8 +24,8 @@ public class Fullscreen : ToggleModule
 
     public Fullscreen()
     {
-        resolutionXconfig = new TextInputConfig<int>(this, "Width", 1280, "The width of the non-fullscreen window.", (i)=>i>0);
-        resolutionYconfig = new TextInputConfig<int>(this, "Height", 720, "The height of the non-fullscreen window.", (i)=>i>0);
+        resolutionXconfig = new TextInputConfig<int>(this, "Width", 1280, "The width of the non-fullscreen window.", (i) => i > 0);
+        resolutionYconfig = new TextInputConfig<int>(this, "Height", 720, "The height of the non-fullscreen window.", (i) => i > 0);
     }
 
     public override void Awake()

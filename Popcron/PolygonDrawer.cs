@@ -5,8 +5,8 @@ namespace Popcron;
 
 public class PolygonDrawer : Drawer
 {
-	public override int Draw(ref Vector3[] buffer, params object[] values)
-	{
+    public override int Draw(ref Vector3[] buffer, params object[] values)
+    {
         // could make it double??? nahh
 
         Vector3 position = (Vector3)values[0];
@@ -29,7 +29,7 @@ public class PolygonDrawer : Drawer
             Vector3 next = new Vector3(nx, ny);
             buffer[(i * 3) + 0] = position + (rotation * next);
             buffer[(i * 3) + 1] = position + (rotation * current);
-            buffer[(i * 3) + 2] = position; 
+            buffer[(i * 3) + 2] = position;
         }
         return points * 3;
     }
