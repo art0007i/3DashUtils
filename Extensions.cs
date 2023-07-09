@@ -79,7 +79,7 @@ public static class Extensions
     /// </summary>
     public static T GetModule<T>() where T : IMenuModule
     {
-        return (T)_3DashUtils.moduleList.First((v) => { return typeof(T).IsAssignableFrom(v.GetType()); });
+        return (T)_3DashUtils.moduleList.FirstOrDefault((v) => { return typeof(T).IsAssignableFrom(v.GetType()); });
     }
 
     /// <summary>
@@ -87,7 +87,8 @@ public static class Extensions
     /// </summary>
     public static bool Enabled<T>() where T : ToggleModule
     {
-        return GetModule<T>().Enabled;
+        var mod = GetModule<T>();
+        return mod != null && mod.Enabled;
     }
 
     /// <summary>

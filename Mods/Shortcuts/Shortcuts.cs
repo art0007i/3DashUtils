@@ -8,32 +8,17 @@ using UnityEngine.Rendering;
 
 namespace _3DashUtils.Mods.Shortcuts;
 
-public class Shortcuts : ModuleBase, IKeybindModule
+public class Shortcuts : ButtonsModule
 {
     public override string CategoryName => "Shortcuts";
-    public List<KeyBindInfo> KeyBinds { get; private set; } = new();
 
-    private List<Shortcut> shortcuts;
+    protected override List<KeyBindButton> Buttons { get; } = new();
 
     private bool waitingForSceneChange = false;
 
-    private struct Shortcut
-    {
-        public string Name;
-        public string Description;
-        public KeyBindInfo KeyBind;
-
-        public Shortcut(string name, string description, KeyBindInfo keyBind)
-        {
-            Name = name;
-            Description = description;
-            KeyBind = keyBind;
-        }
-    }
-
     public Shortcuts()
     {
-        shortcuts = new() {
+        Buttons.AddRange(new KeyBindButton[] {
             new("Main Menu", "Loads the main menu instantly.",
                 new("MainMenuShortcut",
                 ()=>SceneManager.LoadScene("Menu"),
@@ -62,8 +47,7 @@ public class Shortcuts : ModuleBase, IKeybindModule
                 Application.Quit,
                 "Keybind for quitting the game instantly.")
             ),
-        };
-        shortcuts.Do((sh) => KeyBinds.Add(sh.KeyBind));
+        });
     }
 
     public override void Awake()
@@ -83,34 +67,13 @@ public class Shortcuts : ModuleBase, IKeybindModule
 
     public static string levelIdText;
     public static bool dontAutoLoad;
-
-    private void KeybindButton(ref int i)
-    {
-        var shortcut = shortcuts[i];
-        var keys = Extensions.EditingKeybinds();
-        var buttonLabel = shortcut.Name + (keys ? $": <b>{shortcut.KeyBind.KeyBind}</b>" : "");
-        var content = new GUIContent(buttonLabel, shortcut.Description);
-        if (GUILayout.Button(content))
-        {
-            if (keys)
-            {
-                _3DashUtils.EditKey(new(KeyCode.None, (key) => shortcut.KeyBind.KeyBind = key, shortcut.Name + " Shortcut"));
-            }
-            else
-            {
-                shortcut.KeyBind.KeyCallback();
-            }
-        }
-        i++;
-    }
-
     public override void OnGUI()
     {
-        var i = 0;
-        KeybindButton(ref i);
-        KeybindButton(ref i);
-        KeybindButton(ref i);
-        KeybindButton(ref i);
+        base.OnGUI();
+        DrawKeybindButton();
+        DrawKeybindButton();
+        DrawKeybindButton();
+        DrawKeybindButton();
 
         GUILayout.BeginHorizontal();
         levelIdText = GUILayout.TextArea(levelIdText, GUILayout.Width(50));
@@ -121,7 +84,7 @@ public class Shortcuts : ModuleBase, IKeybindModule
         }
         GUILayout.EndHorizontal();
 
-        KeybindButton(ref i);
+        DrawKeybindButton();
     }
 }
 

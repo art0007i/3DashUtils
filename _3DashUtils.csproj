@@ -14,7 +14,7 @@
     <!--
       Can be either `MELON` or `BEPINEX`
     -->
-    <TargetLoader>BEPINEX</TargetLoader>
+    <TargetLoader>MELON</TargetLoader>
     <DefineConstants>$(TargetLoader)</DefineConstants>
   </PropertyGroup>
   
