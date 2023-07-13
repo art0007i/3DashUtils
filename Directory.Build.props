@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup>
+    <GamePath>$(MSBuildThisFileDirectory)3Dash</GamePath>
+    <GamePath Condition="Exists('E:\nothing. trust me\3Dash_regular\')">E:\nothing. trust me\3Dash_regular\</GamePath>
+    <GamePath Condition="Exists('C:\Users\Andrew\Desktop\3Dash Windows v1.2.1\')">C:\Users\Andrew\Desktop\3Dash Windows v1.2.1\</GamePath>
+  </PropertyGroup>
+</Project>
