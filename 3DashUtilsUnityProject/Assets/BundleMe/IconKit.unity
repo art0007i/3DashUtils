@@ -2511,7 +2511,7 @@ MonoBehaviour:
   rotateSpeed: 50
   lookOffset: 98
   lerpSpeed: 10
-  snapRange: 2
+  snapRange: 0.4
   hasFocus: 0
 --- !u!1 &445117240
 GameObject:

@@ -11,6 +11,7 @@ using UnityEditor;
 public class AssetBundleMaker : MonoBehaviour
 {
     public Material mat;
+    public bool CopyToUtilsProject = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -68,6 +69,16 @@ public class AssetBundleMaker : MonoBehaviour
         //buildMap[0].assetNames = myAssets;
 
         BuildPipeline.BuildAssetBundles("Assets/Bundles", buildMap, 0, BuildTarget.StandaloneWindows);
+        if (!CopyToUtilsProject) return;
+        var srcPath = Path.Combine(Application.dataPath, "Bundles");
+        var dstPath = Path.Combine(Path.GetDirectoryName(rootPath), "3DashUtils", "Resources");
+        Debug.Log("Building Complete... Copying to " + dstPath);
+        foreach (var bundle in buildMap)
+        {
+            var src = Path.Combine(srcPath, bundle.assetBundleName);
+            var dst = Path.Combine(dstPath, bundle.assetBundleName);
+            File.Copy(src, dst);
+        }
 #endif
     }
 
