@@ -14,7 +14,7 @@ public class ObjectLimitBypass : ToggleModule
 
     public override string ModuleName => "Object Limit Bypass";
 
-    public override string Description => "Increases the object limit to 2147483647.";
+    public override string Description => "Removes the editor object limit completely.";
 
     protected override bool Default => true;
 }

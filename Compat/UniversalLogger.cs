@@ -37,9 +37,9 @@ public class UniversalLogger
 #if BEPINEX
         Log.LogDebug(str);
 #elif MELON
-#if DEBUG
+//#if DEBUG
         Log.Msg(StringifyParams(obj));
-#endif
+//#endif
 #endif
     }
     public void Msg(params object[] obj)
