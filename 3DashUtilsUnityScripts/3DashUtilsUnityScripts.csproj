@@ -4,10 +4,6 @@
     <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
     <TargetFramework>net472</TargetFramework>
   </PropertyGroup>
-  <PropertyGroup>
-    <LangVersion>11.0</LangVersion>
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>$(GamePath)3Dash_Data/Managed/UnityEngine.CoreModule.dll</HintPath>
@@ -52,8 +48,12 @@
       <HintPath>$(GamePath)3Dash_Data/Managed/UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  <Target Name="RegularPostBuild" AfterTargets="PostBuildEvent">
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="../3DashUtilsUnityProject/Assets/Lib" />
     <Message Text="Copied $(TargetFileName) to UnityProject" Importance="high" />
+  </Target>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(CopyToMods)'=='true'">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(PluginPath)" />
+    <Message Text="Copied $(TargetFileName) to $(PluginPath)" Importance="high" />
   </Target>
 </Project>

@@ -71,5 +71,9 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
-# Asset Bundle Builds -- Addon by art0007i
+# -- Addons by art0007i --
+# Asset Bundle Builds
 /[Aa]ssets/[Bb]undles/*
+# Compiled dll and dll.meta file
+# although not sure if I can remove it yet without breaking scripts in unity editor...
+/[Aa]ssets/[Ll]ib/3DashUtilsUnityScripts.*

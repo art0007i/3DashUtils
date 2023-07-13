@@ -4,48 +4,6 @@
     <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
     <TargetFramework>net472</TargetFramework>
   </PropertyGroup>
-  <PropertyGroup>
-    <LangVersion>11.0</LangVersion>
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-    <CopyToMods Condition="'$(CopyToMods)'==''">true</CopyToMods>
-    <!--
-      Can be either `MELON` or `BEPINEX`
-    -->
-    <TargetLoader>BEPINEX</TargetLoader>
-    <DefineConstants>$(TargetLoader)</DefineConstants>
-  </PropertyGroup>
-  
-  <Choose>
-    <When Condition="'$(TargetLoader)'=='BEPINEX'">
-      <PropertyGroup>
-        <PluginPath>$(GamePath)BepInEx/plugins/$(AssemblyName)/</PluginPath>
-        <ResourcePath>$(PluginPath)Resources/</ResourcePath>
-      </PropertyGroup>
-      <ItemGroup>
-        <Reference Include="0Harmony">
-          <HintPath>$(GamePath)BepInEx/core/0Harmony.dll</HintPath>
-        </Reference>
-        <Reference Include="BepInEx">
-          <HintPath>$(GamePath)BepInEx/core/BepInEx.dll</HintPath>
-        </Reference>
-      </ItemGroup>
-    </When>
-    <When Condition="'$(TargetLoader)'=='MELON'">
-      <PropertyGroup>
-        <PluginPath>$(GamePath)Mods/</PluginPath>
-        <ResourcePath>$(GamePath)UserData/$(AssemblyName)/Resources</ResourcePath>
-      </PropertyGroup>
-      <ItemGroup>
-        <Reference Include="0Harmony">
-          <HintPath>$(GamePath)MelonLoader/net35/0Harmony.dll</HintPath>
-        </Reference>
-        <Reference Include="MelonLoader">
-          <HintPath>$(GamePath)MelonLoader/net35/MelonLoader.dll</HintPath>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-
   <ItemGroup>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>$(GamePath)3Dash_Data/Managed/UnityEngine.CoreModule.dll</HintPath>
