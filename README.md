@@ -103,5 +103,14 @@ https://github.com/art0007i/3DashUtils/assets/19620451/da63cba6-7f68-4e68-8fd2-7
 
 ## Building
 
-1. Add a valid GamePath to the [.csproj](https://github.com/art0007i/3DashUtils/blob/0c616d8580f95afa18ef80246eb27f41a7cc2ecd/_3DashUtils.csproj#L13) file
+### Optional Unity Steps (required for modifying assets such as cube skins)
+1. Download unity hub and unity version 2021.3.5f1
+2. In unity open the "Builder" (located inside of assets root)
+3. Click the "ASSET BUILDER" object at the top of the hierarchy
+4. Click the "build bundle" button on the AssetBundleMaker component
+5. This will bundle everything inside the "BundleMe" folder and copy the resulting bundles into the Resources folder of the main project
+
+### Regular Instructions 
+
+1. Add a valid GamePath to the [Directory.Build.props](https://github.com/art0007i/3DashUtils/blob/e863fb28492b4477479db6375be49cfaa359e990/Directory.Build.props#L4) file
 1. use dotnet cli or visual studio or whatever else u use to compile code
