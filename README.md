@@ -12,10 +12,12 @@ We have a discord server! Check it out here: https://discord.gg/dSBMSe6CZC
 
 There are 2 versions of 3DashUtils available, one for [BepInEx](https://github.com/BepInEx/BepInEx) and one for [MelonLoader](https://melonwiki.xyz/)
 
+⚠ The BepInEx install does not work on 3DashPlus. If you are using 3DashPlus use the MelonLoader version!
+
 ### BepInEx
 1. Download [BepInEx](https://github.com/BepInEx/BepInEx/releases/tag/v5.4.21)
 2. Extract the downloaded zip file on top of your game (the BepInEx folder should be in the same folder as 3Dash.exe)
-3. Download [3DashUtils](https://github.com/art0007i/3DashUtils/releases/latest/)
+3. Download [3DashUtils-BepInEx](https://github.com/art0007i/3DashUtils/releases/latest/download/3DashUtils-BepInEx.zip)
 4. Extract the downloaded zip file into the `BepInEx` directory. If it doesn't exist you may need to create it yourself.
 After everything is done your folder structure should have these files:
 ```
@@ -31,7 +33,7 @@ After everything is done your folder structure should have these files:
 ```
 ### MelonLoader
 1. [Install MelonLoader](https://melonwiki.xyz/#/?id=automated-installation).
-2. Download [3DashUtils](https://github.com/art0007i/3DashUtils/releases/latest/)
+2. Download [3DashUtils-MelonLoader](https://github.com/art0007i/3DashUtils/releases/latest/download/3DashUtils-MelonLoader.zip)
 3. Extract the downloaded zip file into the game directory.
 After everything is done your folder structure should have these files:
 ```
