@@ -77,7 +77,7 @@ public class AssetBundleMaker : MonoBehaviour
         {
             var src = Path.Combine(srcPath, bundle.assetBundleName);
             var dst = Path.Combine(dstPath, bundle.assetBundleName);
-            File.Copy(src, dst);
+            File.Copy(src, dst, true);
         }
 #endif
     }
