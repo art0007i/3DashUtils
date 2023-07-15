@@ -20,12 +20,27 @@ namespace _3DashUtils.UnityScripts
         }
         public void Rebuild()
         {
+            var gos = Resources.LoadAll<GameObject>("Cubes");
+            var iconPrefab = Resources.Load<GameObject>("iconPrefab");
+            foreach (var go in gos)
+            {
+                var instance = GameObject.Instantiate(iconPrefab, transform);
+                var icon = GameObject.Instantiate(go, instance.transform.GetChild(0));
+                icon.layer = LayerMask.NameToLayer("UI");
+                foreach (var mesh in icon.GetComponentsInChildren<Renderer>())
+                {
+                    mesh.gameObject.layer = icon.layer;
+                }
+                
+            }
+            /*
             var grid = GetComponent<FlexibleGridLayout>();
             var orig = transform.GetChild(0);
             for (var i = 0; i < (grid.rows * grid.columns) - 1; i++)
             {
                 GameObject.Instantiate(orig, orig.parent);
             }
+            */
         }
 
         // Update is called once per frame

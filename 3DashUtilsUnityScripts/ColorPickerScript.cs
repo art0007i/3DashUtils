@@ -25,6 +25,7 @@ namespace _3DashUtils.UnityScripts
         private Material gradient2Dmaterial;
         public Image previewImage;
         public Color pickedColor;
+        public Material materialToChange;
         public Slider[] sliders = new Slider[3];
         public TMP_InputField hexCode;
         private Material[] sliderMats = new Material[3];
@@ -68,6 +69,9 @@ namespace _3DashUtils.UnityScripts
         public void UpdatePickedColor()
         {
             pickedColor = Color.HSVToRGB(hueSlider.value, knobVisual.anchorMax.x, knobVisual.anchorMax.y);
+
+            materialToChange?.SetColor("_Color", pickedColor);
+
             gradient2Dmaterial.SetColor("_Color", Color.HSVToRGB(hueSlider.value, 1, 1));
             previewImage.color = pickedColor;
             sliders[0].value = pickedColor.r;
@@ -169,8 +173,12 @@ namespace _3DashUtils.UnityScripts
             }
             else
             {
-                Color.RGBToHSV(rainbowColor.color, out var h, out var s, out var v);
-                rainbowColor.color = Color.HSVToRGB(Mathf.Repeat(h + lastParsedSpeed / 10 * Time.deltaTime, 1), 1, brightnessSlider.value);
+                rainbowColor.color = Color.HSVToRGB(Mathf.Repeat(lastParsedSpeed / 10 * Time.timeSinceLevelLoad, 1), 1, brightnessSlider.value);
+            }
+            if(currentColorType == ColorType.Rainbow)
+            {
+
+                materialToChange?.SetColor("_Color", rainbowColor.color);
             }
         }
     }
