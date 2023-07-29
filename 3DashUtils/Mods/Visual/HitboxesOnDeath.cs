@@ -6,7 +6,6 @@ namespace _3DashUtils.Mods.Visual;
 
 internal class HitboxesOnDeath : ToggleModule
 {
-
     public override string CategoryName => "Visual";
 
     public override string ModuleName => "Hitboxes On Death";
