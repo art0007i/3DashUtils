@@ -6,7 +6,6 @@ using _3DashUtils.ModuleSystem;
 #if BEPINEX
 using BepInEx;
 using BepInEx.Configuration;
-using System.IO; // maybe this should be outside, but it's unused in melon rn and i remove unused too often
 #elif MELON
 using MelonLoader;
 #endif
@@ -15,6 +14,7 @@ using UnityEngine;
 using _3DashUtils.Compat;
 using System.Runtime.CompilerServices;
 using System.Reflection;
+using System.IO;
 
 namespace _3DashUtils;
 
@@ -39,7 +39,9 @@ public class _3DashUtils
     public const string VERSION = "1.1.1";
 
     public static UniversalLogger Log { get; private set; }
+#pragma warning disable CS0109 // Member does not hide an inherited member; new keyword is not required
     public static new HarmonyLib.Harmony Harmony;
+#pragma warning restore CS0109 // Member does not hide an inherited member; new keyword is not required
 #if BEPINEX
     public static ConfigFile ConfigFile = new ConfigFile(Path.Combine(Paths.ConfigPath, MODNAME + ".cfg"), saveOnInit: true);
 #endif
@@ -65,12 +67,22 @@ public class _3DashUtils
     {
         public List<IMenuModule> modules;
         internal int internalWindowID;
-        public Rect windowRect;
+        public Vector2 lastSize = new Vector2(180, 180);
+        public Rect windowRect {
+            get => new Rect(windowPos.Value, lastSize);
+            set {
+                windowPos.Value = value.position;
+                lastSize = value.size;
+            }
+        }
+        public Compat.ConfigWrapper<Vector2> windowPos;
 
-        public ModuleCategory(List<IMenuModule> modules, int internalWindowID)
+        public ModuleCategory(List<IMenuModule> modules, int internalWindowID, Vector2 defaultPos)
         {
             this.modules = modules;
             this.internalWindowID = internalWindowID;
+            var catName = modules[0].CategoryName;
+            this.windowPos = new("Windows", catName, defaultPos, $"Position of the {catName} window.");
         }
     }
 #if BEPINEX
@@ -90,7 +102,6 @@ public class _3DashUtils
         UtilsIconKitBundle = AssetBundle.LoadFromMemory(Properties.Resources.utilsiconkit);
         var pt = Path.GetDirectoryName(typeof(_3DashUtils).Assembly.Location);
         var asm = Assembly.LoadFile(pt + "./3DashUtilsUnityScripts.dll");
-        Log.Dbg("Types: \n" + string.Join("\n  ", asm.GetTypes().AsEnumerable()));
         int i = 0;
         var modules = typeof(_3DashUtils).Assembly.GetTypes().Where((t) => !t.IsAbstract && !t.IsInterface && typeof(IMenuModule).IsAssignableFrom(t));
         foreach (var mod in modules)
@@ -109,8 +120,20 @@ public class _3DashUtils
             else
             {
                 var lst = new List<IMenuModule>(new IMenuModule[] { modObj });
-                var mcat = new ModuleCategory(lst, i);
-                mcat.windowRect = new Rect(20 + (i * 200), 20, 180, 100);
+
+                var xgap = 200;
+                var ygap = 200;
+                var ypos = (xgap * i) / Screen.width;
+                var xpos = i % (Screen.width / xgap);
+
+                var x = 20 + (xpos * xgap);
+                var y = 20 + (ypos * ygap);
+                var pos = new Vector2(x, y);
+                var mcat = new ModuleCategory(lst, i, pos);
+                if(mcat.windowPos.Value.x > Screen.width || mcat.windowPos.Value.y > Screen.height)
+                {
+                    mcat.windowPos.Value = new Vector2(20, 20);
+                }
                 moduleCategories.Add(modObj.CategoryName, mcat);
                 i++;
             }

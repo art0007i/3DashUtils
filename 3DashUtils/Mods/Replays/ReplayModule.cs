@@ -27,6 +27,8 @@ public class ReplayModule : ToggleModule, IConfigurableModule
 
     public override string Description => "Allows you to record and play replay files. Currently slightly unstable.";
 
+    public override bool IsCheat => Enabled;
+
     // these 2 are for recording
     static public double lastOffset;
     static public bool lastClick = false;
@@ -46,10 +48,10 @@ public class ReplayModule : ToggleModule, IConfigurableModule
     public static ConfigWrapper<ReplayMode> modeConfig = new("Replays", "Mode", ReplayMode.Recording, "Current mode of the ReplayModule.");
 
     public static string ReplayName { get => replayNameOption.Value; set => replayNameOption.Value = value; }
-    public static string ReplayPath { get => Path.Combine(basePath, ReplayName) + ".3dr"; }
+    public static string ReplayPath { get => Path.Combine(basePath, ReplayName) + ".3dr"; } //3dash replay (.3dr)
     public static ConfigOptionBase<string> replayNameOption { get; set; }
 
-    static string basePath = Path.Combine(Extensions.GetPluginDataPath(), "Replays"); //3dash replay (.3dr)
+    static string basePath = Path.Combine(Extensions.GetPluginDataPath(), "Replays");
 
     public ReplayModule()
     {

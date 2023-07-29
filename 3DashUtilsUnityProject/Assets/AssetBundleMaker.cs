@@ -40,7 +40,8 @@ public class AssetBundleMaker : MonoBehaviour
             (s) => {
                 var ex = Path.GetExtension(s);
                 // C# FILES CANNOT BE BUNDLED!! MUST DO IT MANUALLY
-                return ex != ".meta" && ex != ".cs";
+                // mtl files aren't proper unity assets...
+                return ex != ".meta" && ex != ".cs" && ex != ".mtl";
             });
         // map 0 has no unity scenes
         var map0 = assetEnum.Where((s) => !s.EndsWith(".unity"));
