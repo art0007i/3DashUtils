@@ -10,7 +10,7 @@ class TextInputConfig<T> : ConfigOptionBase<T>
     /// </summary>
     public TextInputConfig(IMenuModule module, string name, T defaultValue, string description, TryParse<T> parseTextFunction) : base(module, name, defaultValue, description)
     {
-        lastText = Value.ToString();
+        fieldText = Value.ToString();
         textTryParser = parseTextFunction;
     }
 
@@ -27,6 +27,7 @@ class TextInputConfig<T> : ConfigOptionBase<T>
     /// <item><see cref="int"/></item>
     /// <item><see cref="float"/></item>
     /// <item><see cref="double"/></item>
+    /// <item><see cref="Color"/></item>
     /// </list>
     /// </summary>
     /// <exception cref="ArgumentException">Thrown whenever the passed parameter <typeparamref name="T"/> is not one of the supported ones.</exception>
@@ -40,21 +41,41 @@ class TextInputConfig<T> : ConfigOptionBase<T>
         var check = parsedValueCheck ?? Dummycheck;
 
 
-        lastText = Value.ToString();
+        if(Value is Color c)
+        {
+            fieldText = Extensions.ToHexString(c);
+        }
+        else
+        {
+            fieldText = Value.ToString();
+        }
         textTryParser = (string text, out T parse) => parser(text, out parse, check);
     }
 
-    internal string lastText;
+    internal string fieldText;
+    internal string lastParsedText;
 
     internal TryParse<T> textTryParser;
 
+    string guid = Guid.NewGuid().ToString();
+    string previousFocus = "";
+
     public override void OnGUI()
     {
-        var newText = GUILayout.TextField(lastText);
-        if (textTryParser(newText, out var i))
+        GUI.SetNextControlName(guid);
+        fieldText = GUILayout.TextField(fieldText);
+        string currentFocus = GUI.GetNameOfFocusedControl();
+
+        if (previousFocus == guid && currentFocus != guid)
+        {
+            fieldText = lastParsedText;
+        }
+        previousFocus = currentFocus;
+
+        if (textTryParser(fieldText, out var i))
         {
             Value = i;
-            lastText = newText;
+            lastParsedText = fieldText;
         }
     }
 }
