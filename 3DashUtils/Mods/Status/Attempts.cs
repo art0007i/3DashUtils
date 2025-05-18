@@ -5,6 +5,8 @@ using _3DashUtils.ModuleSystem.Config;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 using UnityEngine.SceneManagement;
+using _3DashUtils.Mods.Player;
+using TMPro;
 
 namespace _3DashUtils.Mods.Status;
 public class Attempts : TemplateLabel
@@ -19,11 +21,14 @@ public class Attempts : TemplateLabel
 
     public override string text { get; set; } = "";
 
-    private int attempts = 0;
+    private int attempts = 1;
 
     private float debounce;
 
     private PlayerScript player;
+
+    private bool previousDead = false;
+    private bool currentDead = false;
 
     public override void Start()
     {
@@ -40,10 +45,10 @@ public class Attempts : TemplateLabel
 
     public override void Update()
     {
-        debounce = Math.Max(0, debounce - 1);
-        if (player && player.dead && debounce < 1)
+        previousDead = currentDead;
+        currentDead = player && player.dead;
+        if(!previousDead && currentDead)
         {
-            debounce = 200;
             attempts++;
         }
     }
