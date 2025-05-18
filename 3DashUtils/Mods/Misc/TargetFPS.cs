@@ -13,10 +13,13 @@ public class TargetFPS : ToggleModule
 
     public override float Priority => -0.9f;
 
-    public static int Value => valueConfig.Value;
+
     public static ConfigOptionBase<int> valueConfig;
-    public static bool LockDelta => lockDelta.Value;
+    public static int Value => valueConfig.Value;
+
+
     public static ConfigOptionBase<bool> lockDelta;
+    public static bool LockDelta => lockDelta.Value;
 
     public override string Description => "Allows you to select a framerate that the game will run at.";
 

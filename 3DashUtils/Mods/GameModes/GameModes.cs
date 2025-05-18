@@ -26,6 +26,11 @@ public class GameModes : ButtonsModule
                 ()=>GravityFlip(),
                 "Flips the players gravity.")
             ),
+            new("Toggle Mini", "Toggles if the player is mini.",
+                new("ToggleMiniShortcut",
+                ()=>ToggleMini(),
+                "Toggles if the player is mini.")
+            ),
             new("Cube", "Changes the player into the cube gamemode.",
                 new("CubeGamemodeButton",
                 ()=>SetGamemode(GameMode.Cube),
@@ -64,6 +69,21 @@ public class GameModes : ButtonsModule
     {
         Object.FindObjectOfType<PlayerScript>()?.SetCubeShape((int)target);
     }
+
+    internal void ToggleMini()
+    {
+        var player = Object.FindObjectOfType<PlayerScript>();
+        var half = new Vector3(0.5f, 0.5f, 0.5f);
+        if (player.transform.localScale == half)
+        {
+            player.transform.localScale = Vector3.one;
+        }
+        else
+        {
+            player.transform.localScale = half;
+        }
+    }
+
     internal void GravityFlip(bool? down = null)
     {
         var player = Object.FindObjectOfType<PlayerScript>();

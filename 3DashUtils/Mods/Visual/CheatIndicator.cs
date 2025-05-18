@@ -1,13 +1,12 @@
-﻿using _3DashUtils;
-using _3DashUtils.ModuleSystem;
+﻿using _3DashUtils.ModuleSystem;
 using _3DashUtils.ModuleSystem.Config;
 using UnityEngine;
 
-namespace Mods.Status;
+namespace _3DashUtils.Mods.Visual;
 
 internal class CheatIndicator : ToggleModule
 {
-    public override string CategoryName => "Status";
+    public override string CategoryName => "Visual";
 
     public override string ModuleName => "Cheat Indicator";
 

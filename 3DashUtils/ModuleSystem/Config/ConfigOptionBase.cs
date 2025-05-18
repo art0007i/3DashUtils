@@ -29,6 +29,11 @@ public abstract class ConfigOptionBase<T> : IConfigOption
         }
     }
 
+    protected ConfigOptionBase(IMenuModule module)
+    {
+        Module = module;
+    }
+
     public T Value { get => entry.Value; set { entry.Value = value; } }
 
     public string Name { get; private set; }

@@ -14,25 +14,29 @@ namespace _3DashUtils.UnityScripts
             Rainbow,
             Gradient, // Gradient fading back and forth / looping, I would need to program a gradient editor and rn I don't care. the color picker itself was annoying enough :C
         }
-
+        public bool isColor2;
         public ColorType currentColorType = ColorType.Static;
         public GameObject[] typePanels = new GameObject[3];
 
         public RectTransform staticColorGrid;
         private RectTransform knobVisual;
+        public RectTransform KnobVisual { get => knobVisual; set => knobVisual = value; }
         public Slider hueSlider;
         private Vector3[] cornerCache = new Vector3[4];
         private Material gradient2Dmaterial;
+        public Material Gradient2DMaterial { get => gradient2Dmaterial; set => gradient2Dmaterial = value; }
         public Image previewImage;
         public Color pickedColor;
         public Material materialToChange;
         public Slider[] sliders = new Slider[3];
         public TMP_InputField hexCode;
         private Material[] sliderMats = new Material[3];
+        public Material[] SliderMats { get => sliderMats; set => sliderMats = value; }
 
 
         public TMP_InputField rainbowSpeedInput;
         private float lastParsedSpeed = 0;
+        public float LastParsedSpeed { get => lastParsedSpeed; set => lastParsedSpeed = value; }
         public Image rainbowColor;
         public Slider brightnessSlider;
 
@@ -44,6 +48,11 @@ namespace _3DashUtils.UnityScripts
             }
             typePanels[type]?.SetActive(true);
             currentColorType = (ColorType)type;
+            if(currentColorType == ColorType.Static)
+            {
+                // reset after rainbow
+                materialToChange?.SetColor("_Color", pickedColor);
+            }
         }
 
         public void OnDragging(BaseEventData eventData)
@@ -100,86 +109,10 @@ namespace _3DashUtils.UnityScripts
             UpdatePickedColor();
         }
 
-        // Start is called before the first frame update
-        void Start()
+        public static Color GetRainbowColor(bool isColor2, float speed, float brightness)
         {
-            knobVisual = (RectTransform)staticColorGrid.GetChild(0);
-            var evt = staticColorGrid.GetComponent<EventTrigger>();
-            EventTrigger.Entry entry = new EventTrigger.Entry();
-            entry.eventID = EventTriggerType.Drag;
-            entry.callback.AddListener(OnDragging);
-            evt.triggers.Add(entry);
-            var gridImg = staticColorGrid.GetComponent<Image>();
-            gradient2Dmaterial = new Material(gridImg.material);
-            gridImg.material = gradient2Dmaterial;
-            var entry2 = new Slider.SliderEvent();
-            entry2.AddListener((f) => UpdatePickedColor());
-            hueSlider.onValueChanged = entry2;
-
-
-            EventTrigger.Entry entry3 = new EventTrigger.Entry();
-            entry3.eventID = EventTriggerType.Drag;
-            entry3.callback.AddListener((f) =>
-            {
-                var col = new Color(sliders[0].value, sliders[1].value, sliders[2].value);
-                SetFromColor(col);
-            });
-            for (var i = 0; i < 3; i++)
-            {
-                var compSlider = sliders[i];
-                var evtTrigger = compSlider.GetComponent<EventTrigger>();
-                evtTrigger.triggers.Add(entry3);
-                var img = compSlider.transform.Find("Background").GetComponent<Image>();
-                img.material = new Material(img.material);
-                sliderMats[i] = img.material;
-
-            }
-
-            var entry4 = new TMP_InputField.SubmitEvent();
-            entry4.AddListener((str) =>
-            {
-                str = str?.Trim();
-                if (str == null || str.Length < 6)
-                {
-                    UpdatePickedColor();
-                    return;
-                }
-                var hexStr = new string(str.Where((c) =>
-                    ((c >= '0' && c <= '9') ||
-                     (c >= 'a' && c <= 'f') ||
-                     (c >= 'A' && c <= 'F'))).ToArray());
-                if (hexStr.Length < 6)
-                {
-                    UpdatePickedColor();
-                    return;
-                }
-                var r = (float)int.Parse(hexStr.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
-                var g = (float)int.Parse(hexStr.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
-                var b = (float)int.Parse(hexStr.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
-                SetFromColor(new Color(r / 255f, g / 255f, b / 255f));
-            });
-            hexCode.onEndEdit = entry4;
-
-            SetFromColor(pickedColor);
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-            lastParsedSpeed = float.TryParse(rainbowSpeedInput.text, out var spd) ? spd : 0;
-            if (lastParsedSpeed == 0)
-            {
-                rainbowColor.color = Color.red;
-            }
-            else
-            {
-                rainbowColor.color = Color.HSVToRGB(Mathf.Repeat(lastParsedSpeed / 10 * Time.timeSinceLevelLoad, 1), 1, brightnessSlider.value);
-            }
-            if(currentColorType == ColorType.Rainbow)
-            {
-
-                materialToChange?.SetColor("_Color", rainbowColor.color);
-            }
+            var rainbowProgress = (speed / 10 * Time.timeSinceLevelLoad) + (isColor2 ? .5f : 0);
+            return Color.HSVToRGB(Mathf.Repeat(rainbowProgress, 1), 1, brightness);
         }
     }
 }
