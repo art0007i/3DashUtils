@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using UnityEngine;
 
 namespace _3DashUtils.ModuleSystem.Config;
 
@@ -25,6 +23,10 @@ public class CommonTextParsers
         {
             typeof(string),
             StringParser
+        },
+        {
+            typeof(Color),
+            HexColorParser
         }
     };
 
@@ -44,5 +46,9 @@ public class CommonTextParsers
     {
         value = text;
         return checkValue(text);
+    }
+    public static bool HexColorParser(string text, out Color value, Func<Color, bool> checkValue)
+    {
+        return ColorUtility.TryParseHtmlString(text, out value) && checkValue(value);
     }
 }

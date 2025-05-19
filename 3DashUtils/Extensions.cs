@@ -211,4 +211,14 @@ public static class Extensions
     {
         return _3DashUtils.moduleList.OfType<IKeybindModule>().SelectMany((k) => k.KeyBinds);
     }
+
+    public static string ToHexString(Color c)
+    {
+        // TODO: compress doubles, like #aabbcc -> #abc
+        if(c.a > 0.999 && c.a < 1.001)
+        {
+            return  '#' + ColorUtility.ToHtmlStringRGB(c);
+        }
+        return '#' + ColorUtility.ToHtmlStringRGBA(c);
+    }
 }

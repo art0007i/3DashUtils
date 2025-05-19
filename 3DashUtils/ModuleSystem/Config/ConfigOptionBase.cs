@@ -17,7 +17,7 @@ public abstract class ConfigOptionBase<T> : IConfigOption
         Description = description;
         try
         {
-            entry = new(Category, module.ModuleName.JoinPascalCase() + Name, defaultValue, Description);
+            entry = new(Category, module.ModuleName.JoinPascalCase() + Name.JoinPascalCase(), defaultValue, Description);
         }
         catch (Exception e)
         {
