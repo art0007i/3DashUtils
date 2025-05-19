@@ -36,7 +36,7 @@ public class _3DashUtils
 
     public const string GUID = "me.art0007i.3DashUtils";
 
-    public const string VERSION = "1.2.0";
+    public const string VERSION = "1.2.1";
 
     public static UniversalLogger Log { get; private set; }
 #pragma warning disable CS0109 // Member does not hide an inherited member; new keyword is not required
