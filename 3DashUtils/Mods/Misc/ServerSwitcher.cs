@@ -20,14 +20,15 @@ public class ServerSwitcher : ToggleModule
     public static ConfigOptionBase<string> serverAddress;
     public static string ServerAddress => serverAddress.Value;
 
-    public override string Description => "Allows you to switch the games internal server.";
+    public override string Description => "Allows you to switch the games internal multiplayer server.";
 
     protected override bool Default => false;
 
     private bool validateURL(string url)
     {
         bool valid = true;
-        //if (!url.StartsWith("http://") || !url.StartsWith("https://")) valid = false;
+        // maybe put a regex here or something, however you would have the same issue you do with (for example) the hex code text input
+        // that is you have to paste it in instead of typing it in manually which is stupid. and i may remove the hex code filter too idk
 
         return valid;
     }

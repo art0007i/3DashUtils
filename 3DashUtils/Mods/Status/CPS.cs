@@ -11,7 +11,6 @@ public class CPS : TemplateLabel
 {
     public override string CategoryName => "Status";
     public override string ModuleName => "CPS";
-    public override string Description => "Shows a CPS label in the top left corner";
     protected override bool Default => false;
     public override string text { get; set; } = "";
 

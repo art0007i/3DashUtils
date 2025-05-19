@@ -14,7 +14,6 @@ public class NoclipDeaths : TemplateLabel
 {
     public override string CategoryName => "Status";
     public override string ModuleName => "Noclip Deaths";
-    public override string Description => "Shows a Noclip Deaths label in the top left corner";
     protected override bool Default => false;
     public override string text { get; set; } = "";
 
@@ -24,16 +23,21 @@ public class NoclipDeaths : TemplateLabel
     private Noclip noclip;
     private int deaths = 0;
 
+    public static ConfigOptionBase<bool> preserveAcrossAttempts;
+    public static bool PreserveAcrossAttempts => preserveAcrossAttempts.Value;
+
     public override void Start()
     {
         base.Start();
         noclip = Extensions.GetModule<Noclip>();
         SceneManager.activeSceneChanged += SceneChanged;
+
+        preserveAcrossAttempts = new ToggleConfigOption(this, "Preserve across attempts", false, "Preserve Noclip Deaths across attempts");
     }
 
     private void SceneChanged(Scene arg0, Scene arg1)
     {
-        deaths = 0;
+        if (!PreserveAcrossAttempts) deaths = 0;
     }
 
     public override void Update()

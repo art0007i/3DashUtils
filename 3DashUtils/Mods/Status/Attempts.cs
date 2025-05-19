@@ -15,8 +15,6 @@ public class Attempts : TemplateLabel
 
     public override string ModuleName => "Attempts";
 
-    public override string Description => "Shows an Attempts label in the top left corner";
-
     protected override bool Default => false;
 
     public override string text { get; set; } = "";

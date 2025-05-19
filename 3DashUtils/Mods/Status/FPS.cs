@@ -10,8 +10,6 @@ public class FPS : TemplateLabel
 
     public override string ModuleName => "FPS";
 
-    public override string Description => "Shows an FPS label in the top left corner";
-
     protected override bool Default => false;
 
     public override string text { get; set; } = "";

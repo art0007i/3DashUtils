@@ -10,8 +10,6 @@ public class Message : TemplateLabel
 
     public override string ModuleName => "Message";
 
-    public override string Description => "Shows a Message in the top left corner";
-
     protected override bool Default => false;
 
     public override string text { get; set; } = "";
