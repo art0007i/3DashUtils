@@ -17,7 +17,7 @@ public abstract class ConfigOptionBase<T> : IConfigOption
         Description = description;
         try
         {
-            entry = new(Category, module.ModuleName.JoinPascalCase() + Name, defaultValue, Description);
+            entry = new(Category, module.ModuleName.JoinPascalCase() + Name.JoinPascalCase(), defaultValue, Description);
         }
         catch (Exception e)
         {
@@ -27,11 +27,6 @@ public abstract class ConfigOptionBase<T> : IConfigOption
         {
             c.ConfigOptions.Add(this);
         }
-    }
-
-    protected ConfigOptionBase(IMenuModule module)
-    {
-        Module = module;
     }
 
     public T Value { get => entry.Value; set { entry.Value = value; } }

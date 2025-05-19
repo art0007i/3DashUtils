@@ -15,8 +15,9 @@ public class StatusManager : ToggleModule
     public override float Priority => 1;
     protected override bool Default => true;
 
-    public static ConfigOptionBase<string> colorHex;
-    public static string ColorHex => colorHex.Value;
+    private Color previousColor;
+    public static ConfigOptionBase<Color> color;
+    public static Color ColorVal => color.Value;
 
     public static ConfigOptionBase<int> fontSizeValue;
     public static int FontSizeValue => fontSizeValue.Value;
@@ -29,21 +30,7 @@ public class StatusManager : ToggleModule
 
     public StatusManager()
     {
-        colorHex = new TextInputConfig<string>(this, "Color Hex Code", "#FFFFFF", "The hexadecimal color code for the status text.", (v) =>
-        {
-            if (!v.StartsWith("#")) return false;
-            if (v.Length == 7)
-            {
-                for (int i = 1; i < v.Length; i++)
-                {
-                    char c = v[i];
-                    if (!"0123456789ABCDEFabcdef".Contains(c)) return false;
-                }
-                return true;
-            }
-
-            return false;
-        });
+        color = new TextInputConfig<Color>(this, "Color Hex Code", Color.white, "The hexadecimal color code for the status text.");
 
         fontSizeValue = new TextInputConfig<int>(this, "Font Size", 30, "The font size for the status text.", (v) => v > 0);
 
@@ -63,10 +50,10 @@ public class StatusManager : ToggleModule
     public override void Update()
     {
         base.Update();
-        Color color1 = ColorUtility.TryParseHtmlString(ColorHex, out Color parsedColor) ? parsedColor : Color.white;
-        if(color != color1)
+
+        if(previousColor != ColorVal)
         {
-            color = color1;
+            previousColor = ColorVal;
             repositionLabels();
         }
 
@@ -85,13 +72,6 @@ public class StatusManager : ToggleModule
 
     private int spacing = 5;
     private List<TemplateLabel> labels = new List<TemplateLabel>();
-
-    private Color color = Color.white;
-    public Color Color
-    {
-        get { return color; }
-        set { color = value; }
-    }
 
     public enum PositionEnum
     {
@@ -135,25 +115,25 @@ public class StatusManager : ToggleModule
             if(position == PositionEnum.TopLeft)
             {
                 int y = fontSize * i + spacing * (i + 1);
-                item.reposition(spacing, y, fontSize, spacing, color, Enabled);
+                item.reposition(spacing, y, fontSize, spacing, ColorVal, Enabled);
             }
 
             if (position == PositionEnum.TopRight)
             {
                 int y = fontSize * i + spacing * (i + 1);
-                item.reposition(Screen.width - fontSize - item.getWidth(), y, fontSize, spacing, color, Enabled);
+                item.reposition(Screen.width - fontSize - item.getWidth(), y, fontSize, spacing, ColorVal, Enabled);
             }
 
             if (position == PositionEnum.BottomLeft)
             {
                 int y = Screen.height - fontSize * (i + 1) - spacing * (i + 1);
-                item.reposition(spacing, y, fontSize, spacing, color, Enabled);
+                item.reposition(spacing, y, fontSize, spacing, ColorVal, Enabled);
             }
 
             if (position == PositionEnum.BottomRight)
             {
                 int y = Screen.height - fontSize * (i + 1) - spacing * (i + 1);
-                item.reposition(Screen.width - fontSize - item.getWidth(), y, fontSize, spacing, color, Enabled);
+                item.reposition(Screen.width - fontSize - item.getWidth(), y, fontSize, spacing, ColorVal, Enabled);
             }
         }
     }
