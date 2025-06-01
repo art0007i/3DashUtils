@@ -215,9 +215,9 @@ public static class Extensions
     public static string ToHexString(Color c)
     {
         // TODO: compress doubles, like #aabbcc -> #abc
-        if(c.a > 0.999 && c.a < 1.001)
+        if (c.a > 0.999 && c.a < 1.001)
         {
-            return  '#' + ColorUtility.ToHtmlStringRGB(c);
+            return '#' + ColorUtility.ToHtmlStringRGB(c);
         }
         return '#' + ColorUtility.ToHtmlStringRGBA(c);
     }

@@ -77,3 +77,4 @@ crashlytics-build.properties
 # Compiled dll and dll.meta file
 # although not sure if I can remove it yet without breaking scripts in unity editor...
 /[Aa]ssets/[Ll]ib/3DashUtilsUnityScripts.*
+/[Aa]ssets/[Ll]ib/3DashUtilsUnityScripts.dll

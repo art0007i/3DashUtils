@@ -41,7 +41,7 @@ class TextInputConfig<T> : ConfigOptionBase<T>
         var check = parsedValueCheck ?? Dummycheck;
 
 
-        if(Value is Color c)
+        if (Value is Color c)
         {
             fieldText = Extensions.ToHexString(c);
         }
